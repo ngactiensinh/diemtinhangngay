@@ -105,25 +105,35 @@ with st.spinner("Đang kết nối và tổng hợp dữ liệu báo chí..."):
                 
             tin_da_loc = []
             
-            # --- MÀNG LỌC RÁC NÂNG CẤP ---
-            tu_khoa_rac = ["untitled", "vnaid", "lịch tạm ngừng", "cắt điện", "xổ số", "giá vàng", "thời tiết", "tỷ giá"]
+            # --- MÀNG LỌC RÁC NÂNG CẤP BỌC THÉP ---
+            # Thêm "tư liệu văn kiện" vào danh sách đen
+            tu_khoa_rac = ["untitled", "vnaid", "lịch tạm ngừng", "cắt điện", "xổ số", "giá vàng", "thời tiết", "tỷ giá", "tư liệu văn kiện", "tulieuvankien"]
             
             for entry in feed.entries:
                 tieu_de = entry.title.strip()
                 tieu_de_lower = tieu_de.lower()
+                ngay_dang_goc = entry.get('published', '')
                 
+                # 🛡️ CHỐT CHẶN 1: Từ khóa rác và tiêu đề bất thường
                 if len(tieu_de) < 10 or any(rac in tieu_de_lower for rac in tu_khoa_rac):
                     continue 
                 
+                # 🛡️ CHỐT CHẶN 2: Lọc thời gian cứng (Chặn tuyệt đối tin trước 2026)
+                # Kẻ nào có năm cũ trong ngày xuất bản -> Trảm ngay lập tức
+                cac_nam_cu = ["2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025"]
+                if any(nam in ngay_dang_goc for nam in cac_nam_cu):
+                    continue
+                
                 tom_tat = clean_html(entry.get('summary', '')).strip()
                 
+                # 🛡️ CHỐT CHẶN 3: Lọc theo từ khóa sếp gõ (nếu có)
                 if tu_khoa and tu_khoa.lower() not in tieu_de_lower and tu_khoa.lower() not in tom_tat.lower():
                     continue 
                 
                 tin_da_loc.append(entry)
                 if len(tin_da_loc) >= so_luong: break
                     
-            # --- HIỂN THỊ DẠNG LƯỚI (ĐÃ FIX LỖI HTML) ---
+            # --- HIỂN THỊ DẠNG LƯỚI ---
             if tin_da_loc:
                 st.markdown(f"<h3 style='color:#004B87; margin-top: 20px; margin-bottom: 10px; border-bottom: 2px solid #e0e6ed; padding-bottom: 5px;'>📰 {ten_nguon}</h3>", unsafe_allow_html=True)
                 
@@ -136,7 +146,6 @@ with st.spinner("Đang kết nối và tổng hợp dữ liệu báo chí..."):
                     tieu_de = bai_viet.title.replace('"', '&quot;')
                     tom_tat = clean_html(bai_viet.get('summary', '')).replace('"', '&quot;')
                     
-                    # Ép thành 1 dòng HTML duy nhất, không dùng enter xuống dòng để tránh lỗi Markdown của Streamlit
                     html_grid += f"<div class='news-card'><div class='news-title'><a href='{link}' target='_blank'>{tieu_de}</a></div><div class='news-date'>🕒 Xuất bản: {ngay_dang}</div><div class='news-summary'>{tom_tat}</div></div>"
                     
                 html_grid += '</div>'

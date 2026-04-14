@@ -85,7 +85,7 @@ with st.sidebar:
     st.markdown("### ⚙️ BỘ LỌC TIN TỨC")
     nguon_tin = st.selectbox("📌 Chọn nguồn tin:", ["Tất cả"] + list(RSS_FEEDS.keys()))
     tu_khoa = st.text_input("🔍 Tìm từ khóa (VD: đại hội, chỉ đạo...):", "")
-    so_luong = st.slider("📑 Số lượng tin mỗi khối:", 4, 30, 8)
+    so_luong = st.slider("📑 Số lượng tin mỗi khối:", 2, 30, 5)
     
     st.markdown("---")
     st.info("💡 **Gợi ý:** Hệ thống tự động phân loại Tin Tuyên giáo, Dư luận xã hội và Mô hình Dân vận khéo để phục vụ công tác tham mưu.")

@@ -31,14 +31,14 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # ==========================================
-# CẤU HÌNH NGUỒN TIN (RSS FEEDS) - BẢN TINH HOA TUYÊN GIÁO
+# CẤU HÌNH NGUỒN TIN (RSS FEEDS) - BẢN TRỌNG TÂM 24H
 # ==========================================
 RSS_FEEDS = {
-    "🇻🇳 Báo ĐT Đảng Cộng sản VN (dangcongsan.vn)": "https://news.google.com/rss/search?q=site:dangcongsan.vn&hl=vi&gl=VN&ceid=VN:vi",
-    "📍 Báo Tuyên Quang (Thời sự - Chính trị)": "https://news.google.com/rss/search?q=site:baotuyenquang.com.vn+%22th%E1%BB%9Di+s%E1%BB%B1%22+OR+%22ch%C3%ADnh+tr%E1%BB%8B%22&hl=vi&gl=VN&ceid=VN:vi",
-    "📢 Chuyên trang Tuyên giáo - Dân vận": "https://news.google.com/rss/search?q=site:tuyengiaodanvan.vn&hl=vi&gl=VN&ceid=VN:vi",
-    "🇻🇳 Thông tấn xã Việt Nam (TTXVN)": "https://news.google.com/rss/search?q=site:vnanet.vn+OR+site:baotintuc.vn&hl=vi&gl=VN&ceid=VN:vi",
-    "🏛️ Báo Nhân Dân (Chính trị Trung ương)": "https://nhandan.vn/rss/chinhtri.rss",
+    "🔥 TIÊU ĐIỂM QUỐC GIA (Nóng nhất trong ngày)": "https://news.google.com/news/rss/headlines/section/topic/NATION?hl=vi&gl=VN&ceid=VN%3Avi",
+    "🌟 TIN NỔI BẬT (Báo Nhân Dân)": "https://nhandan.vn/rss/tin-noi-bat.rss",
+    "📍 ĐIỂM NÓNG TUYÊN QUANG (Trong 24h qua)": "https://news.google.com/rss/search?q=%22Tuy%C3%AAn+Quang%22+when:1d&hl=vi&gl=VN&ceid=VN:vi",
+    "📢 TUYÊN GIÁO & DÂN VẬN (Trong 24h qua)": "https://news.google.com/rss/search?q=(%22Ban+Tuy%C3%AAn+gi%C3%A1o%22+OR+%22D%C3%A2n+v%E1%BA%ADn%22)+when:1d&hl=vi&gl=VN&ceid=VN:vi",
+    "🇻🇳 TIN CHÍNH TỪ TTXVN & BÁO ĐẢNG (Trong 24h qua)": "https://news.google.com/rss/search?q=(site:dangcongsan.vn+OR+site:vnanet.vn+OR+site:baotintuc.vn)+when:1d&hl=vi&gl=VN&ceid=VN:vi"
 }
 
 # Hàm làm sạch mã HTML trong nội dung tóm tắt

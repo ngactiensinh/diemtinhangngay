@@ -37,7 +37,7 @@ RSS_FEEDS = {
     "🇻🇳 Chính trị Trung ương (Báo Nhân Dân)": "https://nhandan.vn/rss/chinhtri.rss",
     "🌍 Tin Quốc tế (VnExpress)": "https://vnexpress.net/rss/the-gioi.rss",
     "📢 Ban Tuyên giáo & Dân vận TW (Tổng hợp từ Google News)": "https://news.google.com/rss/search?q=%22Ban+Tuy%C3%AAn+gi%C3%A1o%22+OR+%22D%C3%A2n+v%E1%BA%ADn%22&hl=vi&gl=VN&ceid=VN:vi",
-    "📍 Tin tức Tuyên Quang (Tổng hợp từ Google News)": "https://news.google.com/rss/search?q=%22Tuy%C3%AAn+Quang%22&hl=vi&gl=VN&ceid=VN:vi"
+    "📍 Tin tức Tuyên Quang (Tổng hợp từ Báo Tuyên Quang)": "https://baotuyenquang.com.vn/thoi-su-chinh-tri/tin-tuc/"
 }
 
 # Hàm làm sạch mã HTML trong nội dung tóm tắt

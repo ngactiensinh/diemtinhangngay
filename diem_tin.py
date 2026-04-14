@@ -124,7 +124,7 @@ with st.sidebar:
     st.markdown("### ⚙️ BỘ LỌC TIN TỨC")
     nguon_tin = st.selectbox("📌 Chọn nguồn tin:", ["Tất cả"] + list(RSS_FEEDS.keys()))
     tu_khoa = st.text_input("🔍 Tìm từ khóa (VD: đại hội, chỉ đạo...):", "")
-    so_luong = st.slider("📑 Số lượng tin mỗi khối:", 4, 30, 8)
+    so_luong = st.slider("📑 Số lượng tin mỗi khối:", 5, 30, 3)
     
     st.markdown("---")
     st.info("⚡ **Trạng thái:** Hệ thống đã được tối ưu tốc độ bằng Bộ nhớ đệm. Tự động làm mới tin sau mỗi 15 phút.")

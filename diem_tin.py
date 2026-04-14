@@ -6,20 +6,53 @@ import urllib.request
 st.set_page_config(page_title="Điểm Tin Báo Chí - TGDV", page_icon="📰", layout="wide")
 
 # ==========================================
-# GIAO DIỆN & CSS TÙY CHỈNH
+# GIAO DIỆN & CSS TÙY CHỈNH (NÂNG CẤP DẠNG LƯỚI)
 # ==========================================
 st.markdown("""
 <style>
     .stApp { background-color: #f4f6f9; }
     .header-box { background-color: #ffffff; border-top: 4px solid #C8102E; border-radius: 8px; padding: 15px 30px; margin-bottom: 25px; box-shadow: 0px 4px 15px rgba(0,0,0,0.05); text-align: center;}
     .main-title { font-size: 24px; font-weight: 900; color: #C8102E; text-transform: uppercase; margin: 0;}
-    .news-card { background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 15px; border-left: 4px solid #004B87; transition: transform 0.2s;}
+    
+    /* GIAO DIỆN LƯỚI (GRID) HIỆN ĐẠI */
+    .news-grid { 
+        display: grid; 
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); /* Tự động chia cột, mỗi cột tối thiểu 400px */
+        gap: 20px; 
+        margin-bottom: 30px;
+    }
+    
+    /* ĐỊNH DẠNG THẺ TIN TỨC */
+    .news-card { 
+        background-color: #ffffff; 
+        padding: 20px; 
+        border-radius: 8px; 
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
+        border-left: 4px solid #004B87; 
+        transition: transform 0.2s;
+        display: flex;
+        flex-direction: column;
+        height: 100%; /* Ép các thẻ cao bằng nhau */
+    }
     .news-card:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.1);}
-    .news-title { font-size: 18px; font-weight: bold; margin-bottom: 5px;}
+    
+    .news-title { font-size: 16px; font-weight: bold; margin-bottom: 8px; line-height: 1.4;}
     .news-title a { color: #004B87; text-decoration: none; }
     .news-title a:hover { color: #C8102E; text-decoration: underline; }
+    
     .news-date { font-size: 12px; color: #888; margin-bottom: 10px; font-style: italic;}
-    .news-summary { font-size: 14px; color: #444; line-height: 1.5;}
+    
+    .news-summary { 
+        font-size: 14px; 
+        color: #444; 
+        line-height: 1.5;
+        flex-grow: 1;
+        /* Giới hạn tóm tắt hiển thị tối đa 4 dòng cho đều nhau */
+        display: -webkit-box;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -31,96 +64,93 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # ==========================================
-# CẤU HÌNH NGUỒN TIN (RSS FEEDS) - BẢN HOÀN THIỆN
+# CẤU HÌNH NGUỒN TIN (ĐÃ TỐI ƯU HÓA)
 # ==========================================
 RSS_FEEDS = {
     "🔥 TIÊU ĐIỂM QUỐC GIA (Tin nóng 24h)": "https://news.google.com/news/rss/headlines/section/topic/NATION?hl=vi&gl=VN&ceid=VN%3Avi",
     "🌍 QUỐC TẾ NỔI BẬT (Báo Đảng & TTXVN)": "https://news.google.com/rss/search?q=(site:baotintuc.vn+OR+site:nhandan.vn+OR+site:dangcongsan.vn)+(%22Th%E1%BA%BF+gi%E1%BB%9Bi%22+OR+%22Qu%E1%BB%91c+t%E1%BA%BF%22)+when:1d&hl=vi&gl=VN&ceid=VN:vi",
     "📍 TUYÊN GIÁO & DÂN VẬN TUYÊN QUANG": "https://news.google.com/rss/search?q=(site:baotuyenquang.com.vn+OR+%22Tuy%C3%AAn+Quang%22)+(%22Ban+Tuy%C3%AAn+gi%C3%A1o%22+OR+%22D%C3%A2n+v%E1%BA%ADn%22)+when:1d&hl=vi&gl=VN&ceid=VN:vi",
     "🏛️ TUYÊN GIÁO & DÂN VẬN TRUNG ƯƠNG": "https://news.google.com/rss/search?q=(site:dangcongsan.vn+OR+site:tuyengiaodanvan.vn+OR+site:nhandan.vn)+(%22Ban+Tuy%C3%AAn+gi%C3%A1o%22+OR+%22D%C3%A2n+v%E1%BA%ADn%22)+when:1d&hl=vi&gl=VN&ceid=VN:vi",
-    "🇻🇳 TIN CHÍNH THỐNG TTXVN (Trong 24h)": "https://news.google.com/rss/search?q=(site:vnanet.vn+OR+site:baotintuc.vn)+when:1d&hl=vi&gl=VN&ceid=VN:vi"
+    "🇻🇳 TTXVN (Thời sự - Chính trị nổi bật)": "https://news.google.com/rss/search?q=site:baotintuc.vn+(%22th%E1%BB%9Di+s%E1%BB%B1%22+OR+%22ch%C3%ADnh+tr%E1%BB%8B%22+OR+%22l%C3%A3nh+%C4%91%E1%BA%A1o%22)+when:1d&hl=vi&gl=VN&ceid=VN:vi"
 }
 
-# --- BỔ SUNG ĐOẠN CODE LỌC NĂM (Sếp thay đoạn loop hiển thị tin bằng đoạn này) ---
-# (Trong file của sếp, tìm đoạn "for bai_viet in tin_da_loc:", dán đè logic lọc ngày này vào)
-
-# Ví dụ logic lọc để sếp tham khảo:
-# if "2025" in ngay_dang or "2024" in
-
-# Hàm làm sạch mã HTML trong nội dung tóm tắt
 def clean_html(raw_html):
-    if not raw_html:
-        return ""
+    if not raw_html: return ""
     soup = BeautifulSoup(raw_html, "html.parser")
     return soup.get_text()
 
 # ==========================================
-# CỘT SIDEBAR - ĐIỀU KHIỂN & LỌC TỪ KHÓA
+# CỘT SIDEBAR - ĐIỀU KHIỂN
 # ==========================================
 with st.sidebar:
     st.markdown("### ⚙️ BỘ LỌC TIN TỨC")
     nguon_tin = st.selectbox("📌 Chọn nguồn tin:", ["Tất cả"] + list(RSS_FEEDS.keys()))
-    tu_khoa = st.text_input("🔍 Tìm từ khóa (VD: chuyển đổi số, đại hội...):", "")
-    so_luong = st.slider("📑 Số lượng tin hiển thị mỗi nguồn:", 5, 30, 10)
+    tu_khoa = st.text_input("🔍 Tìm từ khóa (VD: đại hội, chỉ đạo...):", "")
+    so_luong = st.slider("📑 Số lượng tin mỗi khối:", 4, 20, 8)
     
     st.markdown("---")
-    st.info("💡 **Gợi ý:** Hệ thống tự động cập nhật tin bài mới nhất từ các đầu báo chính thống. Nhấp vào tiêu đề để đọc chi tiết trên trang gốc.")
+    st.info("💡 **Gợi ý:** Hệ thống hiển thị dạng lưới (Grid) trực quan. Các tin rác, tiện ích dân sinh đã được loại bỏ tự động.")
 
 # ==========================================
 # XỬ LÝ VÀ HIỂN THỊ TIN TỨC
 # ==========================================
-# Xác định danh sách link RSS cần quét
-danh_sach_quet = {}
-if nguon_tin == "Tất cả":
-    danh_sach_quet = RSS_FEEDS
-else:
-    danh_sach_quet[nguon_tin] = RSS_FEEDS[nguon_tin]
-
+danh_sach_quet = RSS_FEEDS if nguon_tin == "Tất cả" else {nguon_tin: RSS_FEEDS[nguon_tin]}
 tong_so_tin = 0
 
 with st.spinner("Đang kết nối và tổng hợp dữ liệu báo chí..."):
     for ten_nguon, url_rss in danh_sach_quet.items():
         try:
-            # Gửi yêu cầu lấy feed với header tùy chỉnh để tránh bị chặn
             req = urllib.request.Request(url_rss, headers={'User-Agent': 'Mozilla/5.0'})
             with urllib.request.urlopen(req) as response:
-                feed_data = response.read()
-                feed = feedparser.parse(feed_data)
+                feed = feedparser.parse(response.read())
                 
             tin_da_loc = []
             
-            # Quét từng bài viết trong feed
+            # --- MÀNG LỌC RÁC NÂNG CẤP ---
+            tu_khoa_rac = ["untitled", "vnaid", "lịch tạm ngừng", "cắt điện", "xổ số", "giá vàng", "thời tiết", "tỷ giá"]
+            
             for entry in feed.entries:
                 tieu_de = entry.title
+                tieu_de_lower = tieu_de.lower()
+                
+                # Loại bài có tiêu đề quá ngắn hoặc chứa từ khóa đen
+                if len(tieu_de) < 10 or any(rac in tieu_de_lower for rac in tu_khoa_rac):
+                    continue 
+                
                 tom_tat = clean_html(entry.get('summary', ''))
                 
-                # Lọc theo từ khóa nếu có
-                if tu_khoa:
-                    if tu_khoa.lower() not in tieu_de.lower() and tu_khoa.lower() not in tom_tat.lower():
-                        continue # Bỏ qua nếu không chứa từ khóa
+                if tu_khoa and tu_khoa.lower() not in tieu_de_lower and tu_khoa.lower() not in tom_tat.lower():
+                    continue 
                 
                 tin_da_loc.append(entry)
-                if len(tin_da_loc) >= so_luong:
-                    break
+                if len(tin_da_loc) >= so_luong: break
                     
+            # --- HIỂN THỊ DẠNG LƯỚI (GRID) ---
             if tin_da_loc:
-                st.markdown(f"### 📰 {ten_nguon}")
+                st.markdown(f"<h3 style='color:#004B87; margin-top: 20px; margin-bottom: 10px; border-bottom: 2px solid #e0e6ed; padding-bottom: 5px;'>📰 {ten_nguon}</h3>", unsafe_allow_html=True)
+                
+                # Mở thẻ div container chứa lưới
+                html_grid = '<div class="news-grid">'
+                
                 for bai_viet in tin_da_loc:
                     tong_so_tin += 1
                     ngay_dang = bai_viet.get('published', 'Không rõ thời gian')
-                    link = bai_viet.link
-                    tieu_de = bai_viet.title
-                    tom_tat = clean_html(bai_viet.get('summary', 'Không có tóm tắt.'))
+                    # Làm gọn định dạng ngày tháng (nếu nó chứa "GMT")
+                    ngay_dang = ngay_dang.replace("GMT", "").strip() 
                     
-                    # Vẽ thẻ tin tức (Card)
-                    st.markdown(f"""
+                    html_grid += f"""
                     <div class="news-card">
-                        <div class="news-title"><a href="{link}" target="_blank">{tieu_de}</a></div>
+                        <div class="news-title"><a href="{bai_viet.link}" target="_blank">{bai_viet.title}</a></div>
                         <div class="news-date">🕒 Xuất bản: {ngay_dang}</div>
-                        <div class="news-summary">{tom_tat}</div>
+                        <div class="news-summary">{clean_html(bai_viet.get('summary', ''))}</div>
                     </div>
-                    """, unsafe_allow_html=True)
-                st.markdown("<br>", unsafe_allow_html=True)
+                    """
+                    
+                # Đóng thẻ div container
+                html_grid += '</div>'
+                
+                # Đẩy toàn bộ khối lưới này ra màn hình
+                st.markdown(html_grid, unsafe_allow_html=True)
                 
         except Exception as e:
             st.error(f"⚠️ Không thể tải dữ liệu từ {ten_nguon}. Vui lòng thử lại sau.")

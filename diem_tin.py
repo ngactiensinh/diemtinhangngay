@@ -31,13 +31,13 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # ==========================================
-# CẤU HÌNH NGUỒN TIN (RSS FEEDS)
+# CẤU HÌNH NGUỒN TIN (RSS FEEDS) ĐÃ ĐƯỢC TỐI ƯU
 # ==========================================
 RSS_FEEDS = {
-    "Báo Nhân Dân (Chính trị)": "https://nhandan.vn/rss/chinhtri.rss",
-    "Báo Nhân Dân (Xã hội)": "https://nhandan.vn/rss/xa-hoi.rss",
-    "VnExpress (Thời sự)": "https://vnexpress.net/rss/thoi-su.rss",
-    "VnExpress (Pháp luật)": "https://vnexpress.net/rss/phap-luat.rss"
+    "🇻🇳 Chính trị Trung ương (Báo Nhân Dân)": "https://nhandan.vn/rss/chinhtri.rss",
+    "🌍 Tin Quốc tế (VnExpress)": "https://vnexpress.net/rss/the-gioi.rss",
+    "📢 Ban Tuyên giáo & Dân vận TW (Tổng hợp từ Google News)": "https://news.google.com/rss/search?q=%22Ban+Tuy%C3%AAn+gi%C3%A1o%22+OR+%22D%C3%A2n+v%E1%BA%ADn%22&hl=vi&gl=VN&ceid=VN:vi",
+    "📍 Tin tức Tuyên Quang (Tổng hợp từ Google News)": "https://news.google.com/rss/search?q=%22Tuy%C3%AAn+Quang%22&hl=vi&gl=VN&ceid=VN:vi"
 }
 
 # Hàm làm sạch mã HTML trong nội dung tóm tắt

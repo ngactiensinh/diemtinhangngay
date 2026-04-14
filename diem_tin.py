@@ -31,13 +31,14 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # ==========================================
-# CẤU HÌNH NGUỒN TIN (RSS FEEDS) ĐÃ ĐƯỢC TỐI ƯU
+# CẤU HÌNH NGUỒN TIN (RSS FEEDS) - BẢN TINH HOA TUYÊN GIÁO
 # ==========================================
 RSS_FEEDS = {
-    "🇻🇳 Chính trị Trung ương (Báo Nhân Dân)": "https://nhandan.vn/rss/chinhtri.rss",
-    "🌍 Tin Quốc tế (VnExpress)": "https://vnexpress.net/rss/the-gioi.rss",
-    "📢 Ban Tuyên giáo & Dân vận TW (Tổng hợp từ Google News)": "https://news.google.com/rss/search?q=%22Ban+Tuy%C3%AAn+gi%C3%A1o%22+OR+%22D%C3%A2n+v%E1%BA%ADn%22&hl=vi&gl=VN&ceid=VN:vi",
-    "📍 Tin tức Tuyên Quang (Tổng hợp từ Báo Tuyên Quang)": "https://baotuyenquang.com.vn/thoi-su-chinh-tri/tin-tuc/"
+    "🇻🇳 Báo ĐT Đảng Cộng sản VN (dangcongsan.vn)": "https://news.google.com/rss/search?q=site:dangcongsan.vn&hl=vi&gl=VN&ceid=VN:vi",
+    "📍 Báo Tuyên Quang (Thời sự - Chính trị)": "https://news.google.com/rss/search?q=site:baotuyenquang.com.vn+%22th%E1%BB%9Di+s%E1%BB%B1%22+OR+%22ch%C3%ADnh+tr%E1%BB%8B%22&hl=vi&gl=VN&ceid=VN:vi",
+    "📢 Chuyên trang Tuyên giáo - Dân vận": "https://news.google.com/rss/search?q=site:tuyengiaodanvan.vn&hl=vi&gl=VN&ceid=VN:vi",
+    "🇻🇳 Thông tấn xã Việt Nam (Tin mới nhất)": "https://baotintuc.vn/tin-moi-nhat.rss",
+    "🏛️ Báo Nhân Dân (Chính trị Trung ương)": "https://nhandan.vn/rss/chinhtri.rss",
 }
 
 # Hàm làm sạch mã HTML trong nội dung tóm tắt

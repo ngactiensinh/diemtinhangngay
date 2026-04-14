@@ -37,7 +37,7 @@ RSS_FEEDS = {
     "🇻🇳 Báo ĐT Đảng Cộng sản VN (dangcongsan.vn)": "https://news.google.com/rss/search?q=site:dangcongsan.vn&hl=vi&gl=VN&ceid=VN:vi",
     "📍 Báo Tuyên Quang (Thời sự - Chính trị)": "https://news.google.com/rss/search?q=site:baotuyenquang.com.vn+%22th%E1%BB%9Di+s%E1%BB%B1%22+OR+%22ch%C3%ADnh+tr%E1%BB%8B%22&hl=vi&gl=VN&ceid=VN:vi",
     "📢 Chuyên trang Tuyên giáo - Dân vận": "https://news.google.com/rss/search?q=site:tuyengiaodanvan.vn&hl=vi&gl=VN&ceid=VN:vi",
-    "🇻🇳 Thông tấn xã Việt Nam (Tin mới nhất)": "https://baotintuc.vn/tin-moi-nhat.rss",
+    "🇻🇳 Thông tấn xã Việt Nam (TTXVN)": "https://news.google.com/rss/search?q=site:vnanet.vn+OR+site:baotintuc.vn&hl=vi&gl=VN&ceid=VN:vi",
     "🏛️ Báo Nhân Dân (Chính trị Trung ương)": "https://nhandan.vn/rss/chinhtri.rss",
 }
 

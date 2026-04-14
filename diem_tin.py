@@ -31,15 +31,20 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # ==========================================
-# CẤU HÌNH NGUỒN TIN (RSS FEEDS) - BẢN TRỌNG TÂM 24H
+# CẤU HÌNH NGUỒN TIN (RSS FEEDS) - BẢN THỜI SỰ & CHÍNH THỐNG
 # ==========================================
 RSS_FEEDS = {
-    "🔥 TIÊU ĐIỂM QUỐC GIA (Nóng nhất trong ngày)": "https://news.google.com/news/rss/headlines/section/topic/NATION?hl=vi&gl=VN&ceid=VN%3Avi",
-    "🌟 TIN NỔI BẬT (Báo Nhân Dân)": "https://nhandan.vn/rss/tin-noi-bat.rss",
-    "📍 ĐIỂM NÓNG TUYÊN QUANG (Trong 24h qua)": "https://news.google.com/rss/search?q=%22Tuy%C3%AAn+Quang%22+when:1d&hl=vi&gl=VN&ceid=VN:vi",
-    "📢 TUYÊN GIÁO & DÂN VẬN (Trong 24h qua)": "https://news.google.com/rss/search?q=(%22Ban+Tuy%C3%AAn+gi%C3%A1o%22+OR+%22D%C3%A2n+v%E1%BA%ADn%22)+when:1d&hl=vi&gl=VN&ceid=VN:vi",
-    "🇻🇳 TIN CHÍNH TỪ TTXVN & BÁO ĐẢNG (Trong 24h qua)": "https://news.google.com/rss/search?q=(site:dangcongsan.vn+OR+site:vnanet.vn+OR+site:baotintuc.vn)+when:1d&hl=vi&gl=VN&ceid=VN:vi"
+    "🔥 TIÊU ĐIỂM QUỐC GIA (Tin nóng 24h)": "https://news.google.com/news/rss/headlines/section/topic/NATION?hl=vi&gl=VN&ceid=VN%3Avi",
+    "📍 TUYÊN GIÁO & DÂN VẬN TUYÊN QUANG": "https://news.google.com/rss/search?q=(site:baotuyenquang.com.vn+OR+%22Tuy%C3%AAn+Quang%22)+(%22Ban+Tuy%C3%AAn+gi%C3%A1o%22+OR+%22D%C3%A2n+v%E1%BA%ADn%22)+when:1d&hl=vi&gl=VN&ceid=VN:vi",
+    "🏛️ TUYÊN GIÁO & DÂN VẬN TRUNG ƯƠNG": "https://news.google.com/rss/search?q=(site:dangcongsan.vn+OR+site:tuyengiaodanvan.vn+OR+site:nhandan.vn)+(%22Ban+Tuy%C3%AAn+gi%C3%A1o%22+OR+%22D%C3%A2n+v%E1%BA%ADn%22)+when:1d&hl=vi&gl=VN&ceid=VN:vi",
+    "🇻🇳 TIN CHÍNH THỐNG TTXVN (Trong 24h)": "https://news.google.com/rss/search?q=(site:vnanet.vn+OR+site:baotintuc.vn)+when:1d&hl=vi&gl=VN&ceid=VN:vi"
 }
+
+# --- BỔ SUNG ĐOẠN CODE LỌC NĂM (Sếp thay đoạn loop hiển thị tin bằng đoạn này) ---
+# (Trong file của sếp, tìm đoạn "for bai_viet in tin_da_loc:", dán đè logic lọc ngày này vào)
+
+# Ví dụ logic lọc để sếp tham khảo:
+# if "2025" in ngay_dang or "2024" in
 
 # Hàm làm sạch mã HTML trong nội dung tóm tắt
 def clean_html(raw_html):

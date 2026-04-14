@@ -31,10 +31,11 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # ==========================================
-# CẤU HÌNH NGUỒN TIN (RSS FEEDS) - BẢN THỜI SỰ & CHÍNH THỐNG
+# CẤU HÌNH NGUỒN TIN (RSS FEEDS) - BẢN HOÀN THIỆN
 # ==========================================
 RSS_FEEDS = {
     "🔥 TIÊU ĐIỂM QUỐC GIA (Tin nóng 24h)": "https://news.google.com/news/rss/headlines/section/topic/NATION?hl=vi&gl=VN&ceid=VN%3Avi",
+    "🌍 QUỐC TẾ NỔI BẬT (Báo Đảng & TTXVN)": "https://news.google.com/rss/search?q=(site:baotintuc.vn+OR+site:nhandan.vn+OR+site:dangcongsan.vn)+(%22Th%E1%BA%BF+gi%E1%BB%9Bi%22+OR+%22Qu%E1%BB%91c+t%E1%BA%BF%22)+when:1d&hl=vi&gl=VN&ceid=VN:vi",
     "📍 TUYÊN GIÁO & DÂN VẬN TUYÊN QUANG": "https://news.google.com/rss/search?q=(site:baotuyenquang.com.vn+OR+%22Tuy%C3%AAn+Quang%22)+(%22Ban+Tuy%C3%AAn+gi%C3%A1o%22+OR+%22D%C3%A2n+v%E1%BA%ADn%22)+when:1d&hl=vi&gl=VN&ceid=VN:vi",
     "🏛️ TUYÊN GIÁO & DÂN VẬN TRUNG ƯƠNG": "https://news.google.com/rss/search?q=(site:dangcongsan.vn+OR+site:tuyengiaodanvan.vn+OR+site:nhandan.vn)+(%22Ban+Tuy%C3%AAn+gi%C3%A1o%22+OR+%22D%C3%A2n+v%E1%BA%ADn%22)+when:1d&hl=vi&gl=VN&ceid=VN:vi",
     "🇻🇳 TIN CHÍNH THỐNG TTXVN (Trong 24h)": "https://news.google.com/rss/search?q=(site:vnanet.vn+OR+site:baotintuc.vn)+when:1d&hl=vi&gl=VN&ceid=VN:vi"

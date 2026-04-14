@@ -126,25 +126,12 @@ with st.spinner("Đang kết nối và tổng hợp dữ liệu báo chí..."):
                 if len(tin_da_loc) >= so_luong: break
                     
             # --- HIỂN THỊ DẠNG LƯỚI (GRID) ---
-            if tin_da_loc:
-                st.markdown(f"<h3 style='color:#004B87; margin-top: 20px; margin-bottom: 10px; border-bottom: 2px solid #e0e6ed; padding-bottom: 5px;'>📰 {ten_nguon}</h3>", unsafe_allow_html=True)
-                
-                # Mở thẻ div container chứa lưới
-                html_grid = '<div class="news-grid">'
-                
-                for bai_viet in tin_da_loc:
-                    tong_so_tin += 1
-                    ngay_dang = bai_viet.get('published', 'Không rõ thời gian')
-                    # Làm gọn định dạng ngày tháng (nếu nó chứa "GMT")
-                    ngay_dang = ngay_dang.replace("GMT", "").strip() 
-                    
-                    html_grid += f"""
-                    <div class="news-card">
-                        <div class="news-title"><a href="{bai_viet.link}" target="_blank">{bai_viet.title}</a></div>
-                        <div class="news-date">🕒 Xuất bản: {ngay_dang}</div>
-                        <div class="news-summary">{clean_html(bai_viet.get('summary', ''))}</div>
-                    </div>
-                    """
+                    # ÉP SÁT LỀ TRÁI ĐỂ KHÔNG BỊ LỖI HIỂN THỊ RAW HTML
+                    html_grid += f"""<div class="news-card">
+<div class="news-title"><a href="{bai_viet.link}" target="_blank">{bai_viet.title}</a></div>
+<div class="news-date">🕒 Xuất bản: {ngay_dang}</div>
+<div class="news-summary">{clean_html(bai_viet.get('summary', ''))}</div>
+</div>"""
                     
                 # Đóng thẻ div container
                 html_grid += '</div>'

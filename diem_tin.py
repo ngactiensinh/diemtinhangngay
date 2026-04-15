@@ -64,11 +64,11 @@ st.markdown(f"""
 # CẤU HÌNH NGUỒN TIN (BẢN VIP)
 # ==========================================
 RSS_FEEDS = {
-    "🔥 TIÊU ĐIỂM QUỐC GIA (Tin nóng 24h)": "https://news.google.com/news/rss/headlines/section/topic/NATION?hl=vi&gl=VN&ceid=VN%3Avi",
+    "🔥 TIÊU ĐIỂM TRONG NƯỚC (Tin nóng 24h)": "https://news.google.com/news/rss/headlines/section/topic/NATION?hl=vi&gl=VN&ceid=VN%3Avi",
     "🌍 QUỐC TẾ NỔI BẬT (Báo Đảng & TTXVN)": "https://news.google.com/rss/search?q=(site:baotintuc.vn+OR+site:nhandan.vn+OR+site:dangcongsan.vn)+(%22Th%E1%BA%BF+gi%E1%BB%9Bi%22+OR+%22Qu%E1%BB%91c+t%E1%BA%BF%22)+when:1d&hl=vi&gl=VN&ceid=VN:vi",
     "📍 TUYÊN GIÁO & DÂN VẬN TUYÊN QUANG": "https://news.google.com/rss/search?q=(site:baotuyenquang.com.vn+OR+%22Tuy%C3%AAn+Quang%22)+(%22Ban+Tuy%C3%AAn+gi%C3%A1o%22+OR+%22D%C3%A2n+v%E1%BA%ADn%22)+when:1d&hl=vi&gl=VN&ceid=VN:vi",
-    "🗣️ DƯ LUẬN XÃ HỘI TUYÊN QUANG (Điểm nóng 7 ngày)": "https://news.google.com/rss/search?q=(%22d%C6%B0+lu%E1%BA%ADn%22+OR+%22b%E1%BB%A9c+x%C3%BAc%22+OR+%22ph%E1%BA%A3n+%C3%A1nh%22)+%22Tuy%C3%AAn+Quang%22+when:7d&hl=vi&gl=VN&ceid=VN:vi",
-    "🤝 MÔ HÌNH DÂN VẬN KHÉO TỈNH (Tháng qua)": "https://news.google.com/rss/search?q=%22d%C3%A2n+v%E1%BA%ADn+kh%C3%A9o%22+%22Tuy%C3%AAn+Quang%22+when:30d&hl=vi&gl=VN&ceid=VN:vi",
+    "🗣️ DƯ LUẬN XÃ HỘI (Điểm nóng 7 ngày)": "https://news.google.com/rss/search?q=(%22d%C6%B0+lu%E1%BA%ADn%22+OR+%22b%E1%BB%A9c+x%C3%BAc%22+OR+%22ph%E1%BA%A3n+%C3%A1nh%22)+%22Tuy%C3%AAn+Quang%22+when:7d&hl=vi&gl=VN&ceid=VN:vi",
+    "🤝 MÔ HÌNH DÂN VẬN KHÉO (Tháng qua)": "https://news.google.com/rss/search?q=%22d%C3%A2n+v%E1%BA%ADn+kh%C3%A9o%22+%22Tuy%C3%AAn+Quang%22+when:30d&hl=vi&gl=VN&ceid=VN:vi",
     "🏛️ TUYÊN GIÁO & DÂN VẬN TRUNG ƯƠNG": "https://news.google.com/rss/search?q=(site:dangcongsan.vn+OR+site:tuyengiaodanvan.vn+OR+site:nhandan.vn)+(%22Ban+Tuy%C3%AAn+gi%C3%A1o%22+OR+%22D%C3%A2n+v%E1%BA%ADn%22)+when:1d&hl=vi&gl=VN&ceid=VN:vi",
     "🇻🇳 TTXVN (Thời sự - Chính trị nổi bật)": "https://news.google.com/rss/search?q=site:baotintuc.vn+(%22th%E1%BB%9Di+s%E1%BB%B1%22+OR+%22ch%C3%ADnh+tr%E1%BB%8B%22+OR+%22l%C3%A3nh+%C4%91%E1%BA%A1o%22)+when:1d&hl=vi&gl=VN&ceid=VN:vi"
 }

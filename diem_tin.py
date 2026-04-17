@@ -56,7 +56,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ==========================================
-# CẤU HÌNH NGUỒN TIN (ĐÃ FIX LỖI QUỐC TẾ)
+# CẤU HÌNH NGUỒN TIN
 # ==========================================
 RSS_FEEDS = {
     "🔥 TIÊU ĐIỂM TRONG NƯỚC (Tin nóng 24h)": "https://news.google.com/news/rss/headlines/section/topic/NATION?hl=vi&gl=VN&ceid=VN%3Avi",
@@ -68,24 +68,30 @@ RSS_FEEDS = {
     "🇻🇳 TTXVN (Thời sự - Chính trị nổi bật)": "https://news.google.com/rss/search?q=site:baotintuc.vn+(%22th%E1%BB%9Di+s%E1%BB%B1%22+OR+%22ch%C3%ADnh+tr%E1%BB%8B%22+OR+%22l%C3%A3nh+%C4%91%E1%BA%A1o%22)+when:1d&hl=vi&gl=VN&ceid=VN:vi"
 }
 
-# Hàm làm sạch mã HTML trong phần tóm tắt tin
+# Hàm làm sạch mã HTML
 def clean_html(raw_html):
     if not raw_html: return ""
     cleanr = re.compile('<.*?>')
     cleantext = re.sub(cleanr, '', raw_html)
-    # Loại bỏ các khoảng trắng thừa
-    cleantext = " ".join(cleantext.split())
-    return cleantext
+    return " ".join(cleantext.split())
 
-# Caching dữ liệu 15 phút (900 giây) để load siêu tốc
+# Caching dữ liệu 15 phút, lấy dư dả 50 tin để trượt Slider cho mượt
 @st.cache_data(ttl=900)
 def fetch_rss(url):
     try:
         feed = feedparser.parse(url)
-        # Lấy tối đa 15 tin mới nhất mỗi mục
-        return feed.entries[:15]
+        return feed.entries[:50]
     except Exception as e:
         return []
+
+# ==========================================
+# THANH SIDEBAR TÙY CHỈNH
+# ==========================================
+with st.sidebar:
+    st.markdown("<h3 style='color:#004B87;'>⚙️ TÙY CHỈNH HIỂN THỊ</h3>", unsafe_allow_html=True)
+    so_luong_tin = st.slider("Số lượng tin bài mỗi mục:", min_value=3, max_value=30, value=12, step=3)
+    st.markdown("---")
+    st.markdown("💡 **Mẹo:**<br>Hệ thống tự động cập nhật tin mới mỗi 15 phút. Nhấn phím `C` trên bàn phím để làm mới ngay lập tức.", unsafe_allow_html=True)
 
 # ==========================================
 # GIAO DIỆN CHÍNH
@@ -95,7 +101,6 @@ with c_logo2:
     st.markdown("<h1 class='main-header'>📰 HỆ THỐNG ĐIỂM TIN BÁO CHÍ TỰ ĐỘNG 24/7</h1>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; color: #666; margin-top: -15px; margin-bottom: 30px;'>Tổng hợp tin tức thời sự, chính trị, dư luận xã hội phục vụ Ban Tuyên giáo và Dân vận</p>", unsafe_allow_html=True)
 
-# Hiển thị các Tabs
 tabs = st.tabs(list(RSS_FEEDS.keys()))
 
 for i, (tab_name, url) in enumerate(RSS_FEEDS.items()):
@@ -106,13 +111,14 @@ for i, (tab_name, url) in enumerate(RSS_FEEDS.items()):
         if not entries:
             st.info("📌 Hiện tại chưa có tin bài mới nào được cập nhật trong chuyên mục này.")
         else:
-            # Chia lưới 3 cột giống hệt ảnh sếp chụp
+            # Cắt danh sách tin theo đúng số lượng sếp kéo trên Slider
+            entries_to_display = entries[:so_luong_tin]
+            
             cols = st.columns(3)
-            for idx, entry in enumerate(entries):
+            for idx, entry in enumerate(entries_to_display):
                 with cols[idx % 3]:
                     title = entry.get("title", "Không có tiêu đề")
                     link = entry.get("link", "#")
-                    # Lấy ngày xuất bản, nếu không có thì để trống
                     pub_date = entry.get("published", "")
                     summary = clean_html(entry.get("summary", ""))
                     
@@ -125,4 +131,4 @@ for i, (tab_name, url) in enumerate(RSS_FEEDS.items()):
                     """, unsafe_allow_html=True)
 
 st.markdown("---")
-st.markdown("<p style='text-align:center; color:#888; font-size: 13px;'>Hệ thống tự động cập nhật dữ liệu mỗi 15 phút. Nhấn phím <b>C</b> để làm mới ngay lập tức.<br>Nguồn dữ liệu: TTXVN, Báo Đảng và Google News.</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align:center; color:#888; font-size: 13px;'>Nguồn dữ liệu: Thông tấn xã Việt Nam, Báo điện tử Đảng Cộng sản, Báo Tuyên Quang và Google News.</p>", unsafe_allow_html=True)

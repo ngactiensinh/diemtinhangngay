@@ -67,7 +67,7 @@ RSS_FEEDS = {
     "🔥 TIÊU ĐIỂM TRONG NƯỚC (Tin nóng 24h)": "https://news.google.com/news/rss/headlines/section/topic/NATION?hl=vi&gl=VN&ceid=VN%3Avi",
     
     # ĐÃ SỬA LẠI THÀNH KÊNH QUỐC TẾ CHUẨN 100%
-    "🌍 QUỐC TẾ NỔI BẬT (Báo Đảng & TTXVN)": "https://news.google.com/news/rss/headlines/section/topic/WORLD?hl=vi&gl=VN&ceid=VN%3Avi",
+    "🌍 QUỐC TẾ NỔI BẬT (Tin tức Thế giới)": "https://vnexpress.net/rss/the-gioi.rss",
     
     "📍 TUYÊN GIÁO & DÂN VẬN TUYÊN QUANG": "https://news.google.com/rss/search?q=(site:baotuyenquang.com.vn+OR+%22Tuy%C3%AAn+Quang%22)+(%22Ban+Tuy%C3%AAn+gi%C3%A1o%22+OR+%22D%C3%A2n+v%E1%BA%ADn%22)+when:1d&hl=vi&gl=VN&ceid=VN:vi",
     "🗣️ DƯ LUẬN XÃ HỘI (Điểm nóng 7 ngày)": "https://news.google.com/rss/search?q=(%22d%C6%B0+lu%E1%BA%ADn%22+OR+%22b%E1%BB%A9c+x%C3%BAc%22+OR+%22ph%E1%BA%A3n+%C3%A1nh%22)+%22Tuy%C3%AAn+Quang%22+when:7d&hl=vi&gl=VN&ceid=VN:vi",

@@ -2,9 +2,32 @@ import streamlit as st
 import feedparser
 import re
 import time
+from supabase import create_client, Client # Thêm dòng này
 
 st.set_page_config(page_title="Điểm tin Báo chí TGDV", page_icon="📰", layout="wide")
+# ==========================================
+# CẤU HÌNH SUPABASE (DÙNG ĐỂ ĐẾM TRUY CẬP)
+# ==========================================
+SUPABASE_URL = "https://qqzsdxhqrdfvxnlurnyb.supabase.co"
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxenNkeGhxcmRmdnhubHVybnliIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2MjY0NjAsImV4cCI6MjA5MTIwMjQ2MH0.H62F5zYEZ5l47fS4IdAE2JdRdI7inXQqWG0nvXhn2P8"
 
+try:
+    supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+except:
+    pass
+
+# Hàm đếm lượt truy cập
+def log_access("Điểm tin Báo chí"):
+    key_name = f"da_dem_truy_cap_{app_name}"
+    if key_name not in st.session_state:
+        try:
+            supabase.table("thong_ke_truy_cap").insert({"ten_app": app_name}).execute()
+            st.session_state[key_name] = True
+        except:
+            pass
+
+# Kích hoạt đếm cho trang này
+log_access("Điểm tin Báo chí")
 # ==========================================
 # CSS TÙY CHỈNH GIAO DIỆN (CHUẨN TGDV)
 # ==========================================

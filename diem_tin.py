@@ -17,7 +17,7 @@ except:
     pass
 
 # Hàm đếm lượt truy cập
-def log_access("Điểm tin Báo chí"):
+def log_access(app_name):
     key_name = f"da_dem_truy_cap_{app_name}"
     if key_name not in st.session_state:
         try:

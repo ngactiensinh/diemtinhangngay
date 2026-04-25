@@ -28,6 +28,7 @@ def log_access(app_name):
 
 # Kích hoạt đếm cho trang này
 log_access("Điểm tin Báo chí")
+
 # ==========================================
 # CSS TÙY CHỈNH GIAO DIỆN (CHUẨN TGDV)
 # ==========================================

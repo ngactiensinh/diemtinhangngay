@@ -12,10 +12,11 @@ if "da_ghi_truy_cap" not in st.session_state:
             "https://qqzsdxhqrdfvxnlurnyb.supabase.co",
             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxenNkeGhxcmRmdnhubHVybnliIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2MjY0NjAsImV4cCI6MjA5MTIwMjQ2MH0.H62F5zYEZ5l47fS4IdAE2JdRdI7inXQqWG0nvXhn2P8"
         )
-        _sb.table("thong_ke_truy_cap").insert({"ten_app": "Diem Tin Bao Chi"}).execute()
-    except Exception:
-        pass
-    st.session_state["da_ghi_truy_cap"] = True
+        _sb.table("thong_ke_truy_cap").insert({"ten_app": "Điểm tin Báo chí"}).execute()
+        st.session_state["da_ghi_truy_cap"] = True
+    except Exception as e:
+        # Tạm thời in lỗi ra để xem Supabase có đang bị chặn hay thiếu thư viện không
+        st.error(f"Lỗi đếm truy cập: {e}") 
 # ---- HẾT GHI LƯỢT TRUY CẬP ----
 
 # =============================================

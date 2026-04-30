@@ -16,7 +16,7 @@ if "da_ghi_truy_cap" not in st.session_state:
         _sb.table("thong_ke_truy_cap").insert({"ten_app": "Điểm tin Báo chí"}).execute()
         st.session_state["da_ghi_truy_cap"] = True
     except Exception as e:
-        pass 
+        pass
 # ---- HẾT GHI LƯỢT TRUY CẬP ----
 
 # ==========================================
@@ -35,7 +35,7 @@ st.markdown("""
         background-color: #ffffff;
         border-radius: 8px;
         box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        height: 240px;
+        height: 220px;
         display: flex;
         flex-direction: column;
         transition: transform 0.2s, box-shadow 0.2s;
@@ -88,11 +88,10 @@ RSS_FEEDS = {
 BLACKLIST = ["bbc", "rfa", "voa", "rfi", "việt tân", "viet tan", "luatkhoa", "thoibao", "nguoi-viet"]
 
 def is_safe(entry):
-    # Gộp tiêu đề, link và tóm tắt thành chữ thường để dò
     content = (entry.get("title", "") + " " + entry.get("link", "") + " " + entry.get("summary", "")).lower()
     for bad_word in BLACKLIST:
         if bad_word in content:
-            return False # Từ chối hiển thị nếu dính Blacklist
+            return False
     return True
 
 def clean_html(raw_html):
@@ -128,25 +127,11 @@ with c_logo2:
     st.markdown("<h1 class='main-header'>📰 HỆ THỐNG ĐIỂM TIN BÁO CHÍ TỰ ĐỘNG 24/7</h1>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; color: #666; margin-top: -15px; margin-bottom: 30px;'>Tổng hợp tin tức thời sự, chính trị, dư luận xã hội phục vụ Ban Tuyên giáo và Dân vận</p>", unsafe_allow_html=True)
 
-# ==========================================
-# KHUNG ĐỌC BÁO TRỰC TIẾP
-# ==========================================
-st.markdown('<div style="font-size: 1.1rem; font-weight: 800; color: #004B87; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px;">📺 MÀN HÌNH ĐỌC BÁO TRỰC TIẾP</div>', unsafe_allow_html=True)
-st.info("👇 Bấm vào tiêu đề tin tức ở bên dưới, nội dung bài báo sẽ hiện ra tại khung này (Không cần mở tab mới)!")
-
-st.markdown('''
-    <iframe name="man_hinh_doc_bao" width="100%" height="700px" 
-    style="border-radius: 12px; border: 3px solid #004B87; background-color: #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.1);" 
-    src="about:blank"></iframe>
-''', unsafe_allow_html=True)
-
-st.markdown("---")
-
 tabs = st.tabs(list(RSS_FEEDS.keys()))
 
 for i, (tab_name, url) in enumerate(RSS_FEEDS.items()):
     with tabs[i]:
-        with st.spinner("Đang tổng hợp tin tức an toàn..."):
+        with st.spinner("Đang tổng hợp tin tức..."):
             entries = fetch_rss(url)
             
         if not entries:
@@ -162,22 +147,13 @@ for i, (tab_name, url) in enumerate(RSS_FEEDS.items()):
                     pub_date = entry.get("published", "")
                     summary = clean_html(entry.get("summary", ""))
                     
-                    st.markdown(f"""
-                    <div class="news-card">
-                        <!-- ÉP LINK TRUYỀN VÀO MÀN HÌNH MÁY CHIẾU -->
-                        <a class="news-title" href="{link}" target="man_hinh_doc_bao">{title}</a>
-                        
-                        <div class="news-date">🕒 Xuất bản: {pub_date}</div>
-                        <div class="news-summary">{summary}</div>
-                        
-                        <!-- NÚT DỰ PHÒNG -->
-                        <div style="margin-top: auto; padding-top: 10px;">
-                            <a href="{link}" target="_blank" style="font-size: 12px; font-weight: bold; color: #C8102E; text-decoration: none;">
-                                🚀 Mở tab mới (nếu khung trên bị trắng)
-                            </a>
-                        </div>
-                    </div>
-                    """, unsafe_allow_html=True)
+                    # VIẾT SÁT LỀ ĐỂ TRÁNH LỖI HTML BỊ BIẾN THÀNH CODE BLOCK
+                    html_card = f"""<div class="news-card">
+<a class="news-title" href="{link}" target="_blank">{title}</a>
+<div class="news-date">🕒 Xuất bản: {pub_date}</div>
+<div class="news-summary">{summary}</div>
+</div>"""
+                    st.markdown(html_card, unsafe_allow_html=True)
 
 st.markdown("---")
 st.markdown("<p style='text-align:center; color:#888; font-size: 13px;'>Nguồn dữ liệu: Thông tấn xã Việt Nam, Báo điện tử Đảng Cộng sản, Báo Tuyên Quang và Google News.</p>", unsafe_allow_html=True)

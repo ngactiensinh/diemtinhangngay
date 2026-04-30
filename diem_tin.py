@@ -2,9 +2,10 @@ import streamlit as st
 import feedparser
 import re
 import time
-from supabase import create_client, Client # Thêm dòng này
+from supabase import create_client, Client
 
 st.set_page_config(page_title="Điểm tin Báo chí TGDV", page_icon="📰", layout="wide")
+
 # ---- GHI LƯỢT TRUY CẬP ----
 if "da_ghi_truy_cap" not in st.session_state:
     try:
@@ -15,12 +16,9 @@ if "da_ghi_truy_cap" not in st.session_state:
         _sb.table("thong_ke_truy_cap").insert({"ten_app": "Điểm tin Báo chí"}).execute()
         st.session_state["da_ghi_truy_cap"] = True
     except Exception as e:
-        # Tạm thời in lỗi ra để xem Supabase có đang bị chặn hay thiếu thư viện không
-        st.error(f"Lỗi đếm truy cập: {e}") 
+        pass 
 # ---- HẾT GHI LƯỢT TRUY CẬP ----
 
-# =============================================
-# CẤU HÌNH SUPABASE (DÙNG ĐỂ ĐẾM TRUY CẬP)
 # ==========================================
 # CSS TÙY CHỈNH GIAO DIỆN (CHUẨN TGDV)
 # ==========================================
@@ -37,7 +35,7 @@ st.markdown("""
         background-color: #ffffff;
         border-radius: 8px;
         box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        height: 220px;
+        height: 240px;
         display: flex;
         flex-direction: column;
         transition: transform 0.2s, box-shadow 0.2s;
@@ -77,29 +75,39 @@ st.markdown("""
 RSS_FEEDS = {
     "🔥 TIÊU ĐIỂM TRONG NƯỚC (Tin nóng 24h)": "https://news.google.com/news/rss/headlines/section/topic/NATION?hl=vi&gl=VN&ceid=VN%3Avi",
     "🌍 QUỐC TẾ NỔI BẬT (TTXVN)": "https://www.vietnamplus.vn/rss/thegioi.rss",
-    
-    # ĐÃ ĐỔI TÊN VÀ MỞ RỘNG QUÉT TOÀN BỘ TIN TỨC VỀ TUYÊN QUANG
     "📍 TIN TRONG TỈNH (Tuyên Quang 24h)": "https://news.google.com/rss/search?q=%22Tuy%C3%AAn+Quang%22+when:1d&hl=vi&gl=VN&ceid=VN:vi",
-    
     "🗣️ DƯ LUẬN XÃ HỘI (Điểm nóng 7 ngày)": "https://news.google.com/rss/search?q=(%22d%C6%B0+lu%E1%BA%ADn%22+OR+%22b%E1%BB%A9c+x%C3%BAc%22+OR+%22ph%E1%BA%A3n+%C3%A1nh%22)+%22Tuy%C3%AAn+Quang%22+when:7d&hl=vi&gl=VN&ceid=VN:vi",
     "🤝 MÔ HÌNH DÂN VẬN KHÉO (Tháng qua)": "https://news.google.com/rss/search?q=%22d%C3%A2n+v%E1%BA%ADn+kh%C3%A9o%22+%22Tuy%C3%AAn+Quang%22+when:30d&hl=vi&gl=VN&ceid=VN:vi",
     "🏛️ TUYÊN GIÁO & DÂN VẬN TRUNG ƯƠNG": "https://news.google.com/rss/search?q=(site:dangcongsan.vn+OR+site:tuyengiaodanvan.vn+OR+site:nhandan.vn)+(%22Ban+Tuy%C3%AAn+gi%C3%A1o%22+OR+%22D%C3%A2n+v%E1%BA%ADn%22)+when:1d&hl=vi&gl=VN&ceid=VN:vi",
-    "🇻🇳 TTXVN (Thời sự - Chính trị nổi bật)": "https://news.google.com/rss/search?q=site:baotintuc.vn+(%22th%E1%BB%9Di+s%E1%BB%B1%22+OR+%22ch%C3%ADnh+tr%E1%BB%8B%22+OR+%22l%C3%A3nh+%C4%91%E1%BA%A1o%22)+when:1d&hl=vi&gl=VN&ceid=VN:vi"
+    "🇻🇳 TTXVN (Thời sự - Chính trị)": "https://news.google.com/rss/search?q=site:baotintuc.vn+(%22th%E1%BB%9Di+s%E1%BB%B1%22+OR+%22ch%C3%ADnh+tr%E1%BB%8B%22+OR+%22l%C3%A3nh+%C4%91%E1%BA%A1o%22)+when:1d&hl=vi&gl=VN&ceid=VN:vi"
 }
 
-# Hàm làm sạch mã HTML
+# ==========================================
+# BỘ LỌC KIỂM DUYỆT (BLACKLIST)
+# ==========================================
+BLACKLIST = ["bbc", "rfa", "voa", "rfi", "việt tân", "viet tan", "luatkhoa", "thoibao", "nguoi-viet"]
+
+def is_safe(entry):
+    # Gộp tiêu đề, link và tóm tắt thành chữ thường để dò
+    content = (entry.get("title", "") + " " + entry.get("link", "") + " " + entry.get("summary", "")).lower()
+    for bad_word in BLACKLIST:
+        if bad_word in content:
+            return False # Từ chối hiển thị nếu dính Blacklist
+    return True
+
 def clean_html(raw_html):
     if not raw_html: return ""
     cleanr = re.compile('<.*?>')
     cleantext = re.sub(cleanr, '', raw_html)
     return " ".join(cleantext.split())
 
-# Caching dữ liệu 15 phút, lấy dư dả 50 tin để trượt Slider cho mượt
+# Caching dữ liệu 15 phút + Lọc tin an toàn
 @st.cache_data(ttl=900)
 def fetch_rss(url):
     try:
         feed = feedparser.parse(url)
-        return feed.entries[:50]
+        safe_entries = [entry for entry in feed.entries if is_safe(entry)]
+        return safe_entries[:50]
     except Exception as e:
         return []
 
@@ -120,17 +128,30 @@ with c_logo2:
     st.markdown("<h1 class='main-header'>📰 HỆ THỐNG ĐIỂM TIN BÁO CHÍ TỰ ĐỘNG 24/7</h1>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; color: #666; margin-top: -15px; margin-bottom: 30px;'>Tổng hợp tin tức thời sự, chính trị, dư luận xã hội phục vụ Ban Tuyên giáo và Dân vận</p>", unsafe_allow_html=True)
 
+# ==========================================
+# KHUNG ĐỌC BÁO TRỰC TIẾP
+# ==========================================
+st.markdown('<div style="font-size: 1.1rem; font-weight: 800; color: #004B87; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px;">📺 MÀN HÌNH ĐỌC BÁO TRỰC TIẾP</div>', unsafe_allow_html=True)
+st.info("👇 Bấm vào tiêu đề tin tức ở bên dưới, nội dung bài báo sẽ hiện ra tại khung này (Không cần mở tab mới)!")
+
+st.markdown('''
+    <iframe name="man_hinh_doc_bao" width="100%" height="700px" 
+    style="border-radius: 12px; border: 3px solid #004B87; background-color: #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.1);" 
+    src="about:blank"></iframe>
+''', unsafe_allow_html=True)
+
+st.markdown("---")
+
 tabs = st.tabs(list(RSS_FEEDS.keys()))
 
 for i, (tab_name, url) in enumerate(RSS_FEEDS.items()):
     with tabs[i]:
-        with st.spinner("Đang tổng hợp tin tức..."):
+        with st.spinner("Đang tổng hợp tin tức an toàn..."):
             entries = fetch_rss(url)
             
         if not entries:
             st.info("📌 Hiện tại chưa có tin bài mới nào được cập nhật trong chuyên mục này.")
         else:
-            # Cắt danh sách tin theo đúng số lượng sếp kéo trên Slider
             entries_to_display = entries[:so_luong_tin]
             
             cols = st.columns(3)
@@ -143,9 +164,18 @@ for i, (tab_name, url) in enumerate(RSS_FEEDS.items()):
                     
                     st.markdown(f"""
                     <div class="news-card">
-                        <a class="news-title" href="{link}" target="_blank">{title}</a>
+                        <!-- ÉP LINK TRUYỀN VÀO MÀN HÌNH MÁY CHIẾU -->
+                        <a class="news-title" href="{link}" target="man_hinh_doc_bao">{title}</a>
+                        
                         <div class="news-date">🕒 Xuất bản: {pub_date}</div>
                         <div class="news-summary">{summary}</div>
+                        
+                        <!-- NÚT DỰ PHÒNG -->
+                        <div style="margin-top: auto; padding-top: 10px;">
+                            <a href="{link}" target="_blank" style="font-size: 12px; font-weight: bold; color: #C8102E; text-decoration: none;">
+                                🚀 Mở tab mới (nếu khung trên bị trắng)
+                            </a>
+                        </div>
                     </div>
                     """, unsafe_allow_html=True)
 

@@ -150,7 +150,7 @@ for i, (tab_name, url) in enumerate(RSS_FEEDS.items()):
                     
                     # VIẾT SÁT LỀ ĐỂ TRÁNH LỖI HTML BỊ BIẾN THÀNH CODE BLOCK
                     html_card = f"""<div class="news-card">
-<a class="news-title" href="{link}" target="_blank">{title}</a>
+<a class="news-title" href="{link}" target="_self">{title}</a>
 <div class="news-date">🕒 Xuất bản: {pub_date}</div>
 <div class="news-summary">{summary}</div>
 </div>"""

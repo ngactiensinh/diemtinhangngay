@@ -165,7 +165,7 @@ st.markdown("""
 <style>
     .scroll-top {
         position: fixed;
-        bottom: 30px;
+        bottom: 80px; /* Đẩy lên cao để né logo Streamlit */
         right: 30px;
         background-color: #004B87;
         color: white !important;
@@ -178,7 +178,7 @@ st.markdown("""
         font-size: 24px;
         text-decoration: none;
         box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        z-index: 9999;
+        z-index: 99999;
         transition: all 0.3s ease;
     }
     .scroll-top:hover {
@@ -186,13 +186,13 @@ st.markdown("""
         transform: translateY(-5px);
         box-shadow: 0 6px 20px rgba(200,16,46,0.4);
     }
-    /* Chỉnh cho nút nhỏ lại một chút khi xem trên điện thoại */
+    /* Chỉnh cho điện thoại */
     @media (max-width: 768px) {
         .scroll-top {
             width: 45px;
             height: 45px;
             font-size: 20px;
-            bottom: 20px;
+            bottom: 80px; /* Đẩy lên cao trên điện thoại */
             right: 20px;
         }
     }

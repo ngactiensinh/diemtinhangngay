@@ -5,6 +5,7 @@ import time
 from supabase import create_client, Client
 
 st.set_page_config(page_title="Điểm tin Báo chí TGDV", page_icon="📰", layout="wide")
+st.markdown("<div id='top-of-page'></div>", unsafe_allow_html=True)
 
 # ---- GHI LƯỢT TRUY CẬP ----
 if "da_ghi_truy_cap" not in st.session_state:
@@ -157,3 +158,44 @@ for i, (tab_name, url) in enumerate(RSS_FEEDS.items()):
 
 st.markdown("---")
 st.markdown("<p style='text-align:center; color:#888; font-size: 13px;'>Nguồn dữ liệu: Thông tấn xã Việt Nam, Báo điện tử Đảng Cộng sản, Báo Tuyên Quang và Google News.</p>", unsafe_allow_html=True)
+# ==========================================
+# NÚT CUỘN LÊN ĐẦU TRANG (SCROLL TO TOP)
+# ==========================================
+st.markdown("""
+<style>
+    .scroll-top {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background-color: #004B87;
+        color: white !important;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        text-decoration: none;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        z-index: 9999;
+        transition: all 0.3s ease;
+    }
+    .scroll-top:hover {
+        background-color: #C8102E;
+        transform: translateY(-5px);
+        box-shadow: 0 6px 20px rgba(200,16,46,0.4);
+    }
+    /* Chỉnh cho nút nhỏ lại một chút khi xem trên điện thoại */
+    @media (max-width: 768px) {
+        .scroll-top {
+            width: 45px;
+            height: 45px;
+            font-size: 20px;
+            bottom: 20px;
+            right: 20px;
+        }
+    }
+</style>
+<a href="#top-of-page" class="scroll-top" title="Lên đầu trang">⬆️</a>
+""", unsafe_allow_html=True)

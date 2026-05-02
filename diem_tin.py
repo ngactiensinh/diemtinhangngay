@@ -149,8 +149,9 @@ for i, (tab_name, url) in enumerate(RSS_FEEDS.items()):
                     summary = clean_html(entry.get("summary", ""))
                     
                     # VIẾT SÁT LỀ ĐỂ TRÁNH LỖI HTML BỊ BIẾN THÀNH CODE BLOCK
+                    h# Sửa _self hoặc _blank thành _top để phá khung iframe
                     html_card = f"""<div class="news-card">
-<a class="news-title" href="{link}" target="_blank">{title}</a>
+<a class="news-title" href="{link}" target="_top">{title}</a>
 <div class="news-date">🕒 Xuất bản: {pub_date}</div>
 <div class="news-summary">{summary}</div>
 </div>"""

@@ -35,10 +35,10 @@ st.markdown("""
 
     /* ── RESET & BASE ── */
     .stApp {
-        background: #0d1117;
+        background: #f0f4f8;
         background-image:
-            radial-gradient(ellipse at 20% 0%, rgba(0,75,135,0.15) 0%, transparent 50%),
-            radial-gradient(ellipse at 80% 100%, rgba(200,16,46,0.08) 0%, transparent 50%);
+            radial-gradient(ellipse at 20% 0%, rgba(0,75,135,0.06) 0%, transparent 50%),
+            radial-gradient(ellipse at 80% 100%, rgba(200,16,46,0.04) 0%, transparent 50%);
     }
 
     /* Ẩn header/footer mặc định của Streamlit */
@@ -50,16 +50,18 @@ st.markdown("""
         position: relative;
         text-align: center;
         padding: 48px 20px 36px;
-        border-bottom: 1px solid rgba(255,255,255,0.08);
+        background: #ffffff;
+        border-bottom: 3px solid #004B87;
         margin-bottom: 8px;
         overflow: hidden;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
     }
     .masthead::before {
         content: '';
         position: absolute;
-        top: 0; left: 50%; transform: translateX(-50%);
-        width: 1px; height: 40px;
-        background: linear-gradient(to bottom, transparent, #C8102E);
+        top: 0; left: 0; right: 0;
+        height: 4px;
+        background: linear-gradient(to right, #004B87, #C8102E, #004B87);
     }
     .masthead-eyebrow {
         font-family: 'IBM Plex Sans', sans-serif;
@@ -74,7 +76,7 @@ st.markdown("""
         font-family: 'Playfair Display', serif;
         font-size: clamp(32px, 5vw, 62px);
         font-weight: 900;
-        color: #ffffff;
+        color: #0d1a2d;
         line-height: 1.05;
         letter-spacing: -1px;
         margin-bottom: 16px;
@@ -84,7 +86,7 @@ st.markdown("""
         font-family: 'Source Serif 4', serif;
         font-size: 15px;
         font-style: italic;
-        color: rgba(255,255,255,0.45);
+        color: #6b7a8d;
         max-width: 560px;
         margin: 0 auto;
         line-height: 1.6;
@@ -92,7 +94,7 @@ st.markdown("""
     .masthead-date {
         font-family: 'IBM Plex Sans', sans-serif;
         font-size: 11px;
-        color: rgba(255,255,255,0.3);
+        color: #9aaabb;
         letter-spacing: 2px;
         text-transform: uppercase;
         margin-top: 20px;
@@ -109,10 +111,10 @@ st.markdown("""
         flex: 1;
         max-width: 200px;
         height: 1px;
-        background: linear-gradient(to right, transparent, rgba(255,255,255,0.15));
+        background: linear-gradient(to right, transparent, #d0d9e4);
     }
     .masthead-line::after {
-        background: linear-gradient(to left, transparent, rgba(255,255,255,0.15));
+        background: linear-gradient(to left, transparent, #d0d9e4);
     }
     .masthead-ornament {
         color: #C8102E;
@@ -148,35 +150,39 @@ st.markdown("""
 
     /* ── TABS ── */
     .stTabs [data-baseweb="tab-list"] {
-        background: transparent !important;
-        border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+        background: #ffffff !important;
+        border-bottom: 2px solid #e2e8f0 !important;
         gap: 0 !important;
         padding: 0 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     }
     .stTabs [data-baseweb="tab"] {
         background: transparent !important;
         border: none !important;
-        border-bottom: 2px solid transparent !important;
+        border-bottom: 3px solid transparent !important;
         border-radius: 0 !important;
-        color: rgba(255,255,255,0.45) !important;
+        color: #6b7a8d !important;
         font-family: 'IBM Plex Sans', sans-serif !important;
         font-size: 12px !important;
         font-weight: 600 !important;
         letter-spacing: 0.5px !important;
         text-transform: uppercase !important;
         padding: 14px 20px !important;
-        margin-bottom: -1px !important;
+        margin-bottom: -2px !important;
         transition: all 0.2s ease !important;
     }
     .stTabs [data-baseweb="tab"]:hover {
-        color: rgba(255,255,255,0.8) !important;
+        color: #004B87 !important;
+        background: #f8fafc !important;
     }
     .stTabs [aria-selected="true"] {
-        color: #ffffff !important;
-        border-bottom: 2px solid #C8102E !important;
+        color: #004B87 !important;
+        border-bottom: 3px solid #C8102E !important;
+        background: #f8fafc !important;
     }
     .stTabs [data-baseweb="tab-panel"] {
         padding-top: 28px;
+        background: transparent;
     }
 
     /* ── NEWS CARDS ── */
@@ -184,8 +190,8 @@ st.markdown("""
 
     .news-card {
         position: relative;
-        background: rgba(255,255,255,0.03);
-        border: 1px solid rgba(255,255,255,0.06);
+        background: #ffffff;
+        border: 1px solid #e8edf3;
         border-radius: 12px;
         padding: 22px 24px;
         margin-bottom: 16px;
@@ -193,7 +199,8 @@ st.markdown("""
         flex-direction: column;
         min-height: 180px;
         overflow: hidden;
-        transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+        transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     }
     .news-card::before {
         content: '';
@@ -206,13 +213,13 @@ st.markdown("""
         border-radius: 12px 0 0 12px;
     }
     .news-card:hover {
-        background: rgba(255,255,255,0.055);
-        border-color: rgba(255,255,255,0.12);
+        background: #fafcff;
+        border-color: #c5d4e8;
         transform: translateY(-3px);
+        box-shadow: 0 8px 24px rgba(0,75,135,0.1);
     }
     .news-card:hover::before { opacity: 1; }
 
-    /* Category tag */
     .news-tag {
         display: inline-block;
         font-family: 'IBM Plex Sans', sans-serif;
@@ -221,8 +228,8 @@ st.markdown("""
         letter-spacing: 1.5px;
         text-transform: uppercase;
         color: #C8102E;
-        background: rgba(200,16,46,0.1);
-        border: 1px solid rgba(200,16,46,0.25);
+        background: rgba(200,16,46,0.08);
+        border: 1px solid rgba(200,16,46,0.2);
         padding: 2px 8px;
         border-radius: 4px;
         margin-bottom: 12px;
@@ -233,7 +240,7 @@ st.markdown("""
         font-family: 'Playfair Display', serif;
         font-size: 16px;
         font-weight: 700;
-        color: #f0f4f8;
+        color: #1a2a3a;
         text-decoration: none;
         display: -webkit-box;
         -webkit-line-clamp: 3;
@@ -243,7 +250,7 @@ st.markdown("""
         margin-bottom: 12px;
         transition: color 0.2s;
     }
-    .news-title:hover { color: #7eb8f7; text-decoration: none; }
+    .news-title:hover { color: #004B87; text-decoration: none; }
 
     .news-meta {
         display: flex;
@@ -251,20 +258,20 @@ st.markdown("""
         gap: 10px;
         margin-top: auto;
         padding-top: 12px;
-        border-top: 1px solid rgba(255,255,255,0.05);
+        border-top: 1px solid #eef1f6;
     }
     .news-date {
         font-family: 'IBM Plex Sans', sans-serif;
         font-size: 11px;
-        color: rgba(255,255,255,0.3);
+        color: #9aaabb;
         letter-spacing: 0.5px;
     }
-    .news-dot { color: rgba(255,255,255,0.15); font-size: 10px; }
+    .news-dot { color: #d0d9e4; font-size: 10px; }
 
     .news-summary {
         font-family: 'Source Serif 4', serif;
         font-size: 13px;
-        color: rgba(255,255,255,0.45);
+        color: #5a6b7d;
         line-height: 1.65;
         display: -webkit-box;
         -webkit-line-clamp: 2;
@@ -273,31 +280,32 @@ st.markdown("""
         margin-bottom: 4px;
     }
 
-    /* Read more link */
     .read-link {
         font-family: 'IBM Plex Sans', sans-serif;
         font-size: 11px;
         font-weight: 600;
-        color: rgba(126, 184, 247, 0.7);
+        color: #004B87;
         text-decoration: none;
         letter-spacing: 0.5px;
+        opacity: 0.7;
     }
-    .read-link:hover { color: #7eb8f7; }
+    .read-link:hover { opacity: 1; color: #C8102E; }
 
-    /* ── FEATURED (FIRST) CARD ── */
     .news-card-featured {
-        background: linear-gradient(135deg, rgba(0,75,135,0.2) 0%, rgba(0,75,135,0.05) 100%);
-        border: 1px solid rgba(0,75,135,0.3);
+        background: linear-gradient(135deg, #f0f6ff 0%, #ffffff 100%);
+        border: 1px solid #c5d4e8;
+        border-left: 4px solid #004B87;
         min-height: 220px;
     }
     .news-card-featured .news-title {
         font-size: 19px;
+        color: #0d1a2d;
         -webkit-line-clamp: 4;
     }
     .news-card-featured .news-tag {
-        color: #7eb8f7;
-        background: rgba(0,75,135,0.2);
-        border-color: rgba(0,75,135,0.4);
+        color: #004B87;
+        background: rgba(0,75,135,0.08);
+        border-color: rgba(0,75,135,0.25);
     }
 
     /* ── SECTION HEADER ── */

@@ -1,6 +1,6 @@
 """
-HỆ THỐNG ĐIỂM TIN & LẮNG NGHE DƯ LUẬN - PHIÊN BẢN V5.3
-Đã vá: Đồng bộ số liệu thống kê khớp với số tin hiển thị, dỡ bỏ module Zalo Demo để tối ưu giao diện
+HỆ THỐNG ĐIỂM TIN & LẮNG NGHE DƯ LUẬN - PHIÊN BẢN V5.4
+Đã vá: Phục hồi Tab tin Quốc tế theo yêu cầu của Lãnh đạo
 """
 
 import streamlit as st
@@ -110,10 +110,11 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ==========================================
-# CẤU HÌNH NGUỒN TIN (FOCUSED ON TUYÊN QUANG)
+# CẤU HÌNH NGUỒN TIN
 # ==========================================
 RSS_FEEDS = {
     "🔥 Tiêu điểm 24h": {"url": "https://news.google.com/news/rss/headlines/section/topic/NATION?hl=vi&gl=VN&ceid=VN%3Avi", "tag": "TRONG NƯỚC"},
+    "🌍 Quốc tế": {"url": "https://www.vietnamplus.vn/rss/thegioi.rss", "tag": "QUỐC TẾ"},
     "🗣️ Dư luận MXH": {"url": "https://news.google.com/rss/search?q=(%22facebook%22+OR+%22fanpage%22+OR+%22m%E1%BA%A1ng+x%C3%A3+h%E1%BB%99i%22+OR+%22di%E1%BB%85n+%C4%91%C3%A0n%22)+%22Tuy%C3%AAn+Quang%22+when:30d&hl=vi&gl=VN&ceid=VN:vi", "tag": "MẠNG XÃ HỘI"},
     "📍 Địa phương": {"url": "https://news.google.com/rss/search?q=(site:baotuyenquang.com.vn+OR+site:tuyenquang.gov.vn+OR+%22Tuy%C3%AAn+Quang%22)+when:3d&hl=vi&gl=VN&ceid=VN:vi", "tag": "ĐỊA PHƯƠNG"},
     "🤝 Dân vận khéo": {"url": "https://news.google.com/rss/search?q=%22d%C3%A2n+v%E1%BA%ADn+kh%C3%A9o%22+%22Tuy%C3%AAn+Quang%22+when:30d&hl=vi&gl=VN&ceid=VN:vi", "tag": "DÂN VẬN"},
@@ -230,7 +231,6 @@ for i, (tab_name, cfg) in enumerate(RSS_FEEDS.items()):
                 
             st.markdown("<h4 style='color:#004B87; font-weight:800; text-transform:uppercase;'>🎯 Trạm Lắng Nghe & Phân Tích Mạng Xã Hội</h4>", unsafe_allow_html=True)
             
-            # Chia 2 cột thay vì 3 (vì đã dẹp form Zalo)
             d_col1, d_col2 = st.columns([1.2, 2.8])
             
             with d_col1:

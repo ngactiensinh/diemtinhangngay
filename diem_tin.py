@@ -1,6 +1,6 @@
 """
-HỆ THỐNG ĐIỂM TIN & LẮNG NGHE DƯ LUẬN - PHIÊN BẢN V5.0 (ALL-IN-ONE)
-Đã vá: Tích hợp AI Phân tích Cảm xúc và Khảo sát trực tuyến vào Tab Dư luận XH
+HỆ THỐNG ĐIỂM TIN & LẮNG NGHE DƯ LUẬN - PHIÊN BẢN V5.1 (LOCAL FOCUSED)
+Đã vá: Tập trung hút tin dư luận từ Mạng xã hội, Fanpage, Diễn đàn về Tuyên Quang
 """
 
 import streamlit as st
@@ -100,14 +100,14 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ==========================================
-# CẤU HÌNH NGUỒN TIN
+# CẤU HÌNH NGUỒN TIN (FOCUSED ON TUYÊN QUANG)
 # ==========================================
 RSS_FEEDS = {
     "🔥 Tiêu điểm 24h": {"url": "https://news.google.com/news/rss/headlines/section/topic/NATION?hl=vi&gl=VN&ceid=VN%3Avi", "tag": "TRONG NƯỚC"},
-    "🗣️ Dư luận XH": {"url": "https://news.google.com/rss/search?q=(%22d%C6%B0+lu%E1%BA%ADn%22+OR+%22b%E1%BB%A9c+x%C3%BAc%22+OR+%22ph%E1%BA%A3n+%C3%A1nh%22+OR+%22sai+ph%E1%BA%A1m%22)+%22Tuy%C3%AAn+Quang%22+when:30d&hl=vi&gl=VN&ceid=VN:vi", "tag": "DƯ LUẬN"},
-    "📍 Tuyên Quang": {"url": "https://news.google.com/rss/search?q=%22Tuy%C3%AAn+Quang%22+when:1d&hl=vi&gl=VN&ceid=VN:vi", "tag": "ĐỊA PHƯƠNG"},
+    "🗣️ Dư luận MXH": {"url": "https://news.google.com/rss/search?q=(%22facebook%22+OR+%22fanpage%22+OR+%22m%E1%BA%A1ng+x%C3%A3+h%E1%BB%99i%22+OR+%22di%E1%BB%85n+%C4%91%C3%A0n%22)+%22Tuy%C3%AAn+Quang%22+when:30d&hl=vi&gl=VN&ceid=VN:vi", "tag": "MẠNG XÃ HỘI"},
+    "📍 Địa phương": {"url": "https://news.google.com/rss/search?q=(site:baotuyenquang.com.vn+OR+site:tuyenquang.gov.vn+OR+%22Tuy%C3%AAn+Quang%22)+when:3d&hl=vi&gl=VN&ceid=VN:vi", "tag": "ĐỊA PHƯƠNG"},
     "🤝 Dân vận khéo": {"url": "https://news.google.com/rss/search?q=%22d%C3%A2n+v%E1%BA%ADn+kh%C3%A9o%22+%22Tuy%C3%AAn+Quang%22+when:30d&hl=vi&gl=VN&ceid=VN:vi", "tag": "DÂN VẬN"},
-    "🏛️ Tuyên giáo TW": {"url": "https://news.google.com/rss/search?q=(site:dangcongsan.vn+OR+site:tuyengiaodanvan.vn+OR+site:nhandan.vn)+(%22Ban+Tuy%C3%AAn+gi%C3%A1o%22+OR+%22D%C3%A2n+v%E1%BA%ADn%22)+when:1d&hl=vi&gl=VN&ceid=VN:vi", "tag": "TUYÊN GIÁO"},
+    "🏛️ Tuyên giáo TW": {"url": "https://news.google.com/rss/search?q=(site:dangcongsan.vn+OR+site:tuyengiaodanvan.vn+OR+site:nhandan.vn)+(%22Ban+Tuy%C3%AAn+gi%C3%A1o%22+OR+%22D%C3%A2n+v%E1%BA%ADn%22)+when:3d&hl=vi&gl=VN&ceid=VN:vi", "tag": "TUYÊN GIÁO"},
 }
 
 BLACKLIST = ["bbc", "rfa", "voa", "rfi", "việt tân", "viet tan", "luatkhoa", "thoibao", "nguoi-viet"]
@@ -130,11 +130,12 @@ def format_date(date_str):
     return date_str[:25]
 
 def analyze_sentiment(title, summary):
-    """Hàm AI giả lập phân tích cảm xúc của tin bài"""
+    """Hàm AI giả lập phân tích cảm xúc tập trung vào địa phương"""
     text = (title + " " + summary).lower()
     
-    neg_words = ['bức xúc', 'sai phạm', 'kỷ luật', 'đình chỉ', 'chậm', 'kêu cứu', 'phản ánh', 'lừa đảo', 'chiếm đoạt', 'bắt giữ', 'khởi tố', 'vi phạm', 'bất bình', 'tai nạn', 'ngập', 'thiệt hại']
-    pos_words = ['tuyên dương', 'thành công', 'phát triển', 'hiệu quả', 'khen thưởng', 'hoàn thành', 'vượt mức', 'nâng cao', 'tốt', 'biểu dương', 'hỗ trợ', 'khắc phục']
+    # Từ khóa bám sát vấn đề xã/phường/tỉnh
+    neg_words = ['bức xúc', 'sai phạm', 'kêu cứu', 'phản ánh', 'ô nhiễm', 'ngập', 'xuống cấp', 'chậm tiến độ', 'đền bù', 'giải tỏa', 'tệ nạn', 'vi phạm', 'bất cập', 'chưa được']
+    pos_words = ['biểu dương', 'khen thưởng', 'hoàn thành', 'vượt mức', 'xây dựng nông thôn mới', 'khang trang', 'hiệu quả', 'ủng hộ', 'đóng góp', 'khắc phục']
     
     neg_score = sum(1 for w in neg_words if w in text)
     pos_score = sum(1 for w in pos_words if w in text)
@@ -149,10 +150,10 @@ def analyze_sentiment(title, summary):
 def score_entry(entry):
     score = 0
     content = (entry.get("title", "") + " " + entry.get("summary", "")).lower()
-    priority = ["tổng bí thư", "chủ tịch nước", "thủ tướng", "quốc hội", "nghị quyết", "chỉ thị", "quyết định", "hội nghị", "điều tra", "khởi tố", "bắt giữ", "tham nhũng"]
+    priority = ["tuyên quang", "hàm yên", "sơn dương", "chiêm hóa", "nà hang", "lâm bình", "yên sơn", "thành phố"]
     for kw in priority:
         if kw in content: score += 2
-    if len(entry.get("summary", "")) > 200: score += 1
+    if len(entry.get("summary", "")) > 100: score += 1
     return score
 
 @st.cache_data(ttl=900)
@@ -175,7 +176,7 @@ st.markdown(f"""
 <div class="masthead">
     <div class="masthead-eyebrow">BAN TUYÊN GIÁO VÀ DÂN VẬN TỈNH ỦY TUYÊN QUANG</div>
     <h1 class="masthead-title">ĐIỂM TIN & <span>LẮNG NGHE DƯ LUẬN</span></h1>
-    <p class="masthead-subtitle">Hệ thống thu thập tin tức và phân tích mạng xã hội ứng dụng AI</p>
+    <p class="masthead-subtitle">Hệ thống thu thập tin tức và phân tích mạng xã hội địa phương ứng dụng AI</p>
     <span class="live-badge"><span class="live-dot"></span>ĐANG CẬP NHẬT 24/7</span>
 </div>
 """, unsafe_allow_html=True)
@@ -210,10 +211,9 @@ for i, (tab_name, cfg) in enumerate(RSS_FEEDS.items()):
         tag = cfg["tag"]
 
         # =======================================================
-        # NẾU LÀ TAB DƯ LUẬN XÃ HỘI -> HIỂN THỊ DASHBOARD LẮNG NGHE
+        # NẾU LÀ TAB DƯ LUẬN MXH -> HIỂN THỊ DASHBOARD LẮNG NGHE
         # =======================================================
-        if tab_name == "🗣️ Dư luận XH":
-            # Xử lý sentiment cho tất cả entry cào được để vẽ biểu đồ
+        if tab_name == "🗣️ Dư luận MXH":
             sentiments = []
             for e in entries:
                 t = e.get("title", "")
@@ -225,7 +225,7 @@ for i, (tab_name, cfg) in enumerate(RSS_FEEDS.items()):
             sent_counts = df_sent["Cảm xúc"].value_counts().reset_index()
             
             # --- DASHBOARD UI ---
-            st.markdown("<h4 style='color:#004B87; font-weight:800; text-transform:uppercase;'>🎯 Trạm Lắng Nghe & Phân Tích Dư Luận</h4>", unsafe_allow_html=True)
+            st.markdown("<h4 style='color:#004B87; font-weight:800; text-transform:uppercase;'>🎯 Trạm Lắng Nghe & Phân Tích Mạng Xã Hội</h4>", unsafe_allow_html=True)
             
             d_col1, d_col2, d_col3 = st.columns([1, 1.5, 1.5])
             
@@ -233,7 +233,7 @@ for i, (tab_name, cfg) in enumerate(RSS_FEEDS.items()):
             with d_col1:
                 st.markdown(f"""
                 <div class='dashboard-box'>
-                    <div class='kpi-title'>Tổng lượt quét (30 ngày)</div>
+                    <div class='kpi-title'>Tin/Bài liên quan Tuyên Quang</div>
                     <div class='kpi-value' style='color:#004B87;'>{len(entries)} bài</div>
                     <hr style='margin:10px 0;'>
                     <div class='kpi-title' style='color:#DC2626'>Cảnh báo Tiêu cực</div>
@@ -245,11 +245,15 @@ for i, (tab_name, cfg) in enumerate(RSS_FEEDS.items()):
             with d_col2:
                 st.markdown("<div class='dashboard-box'>", unsafe_allow_html=True)
                 color_map = {"Tích cực": "#16A34A", "Trung lập": "#D97706", "Tiêu cực": "#DC2626"}
-                fig = px.pie(sent_counts, values='count', names='Cảm xúc', hole=0.6, color='Cảm xúc', color_discrete_map=color_map)
-                fig.update_traces(textposition='outside', textinfo='percent+label')
-                fig.update_layout(title=dict(text="AI Phân tích Cảm xúc dư luận", font=dict(size=13, color='#475569')), 
-                                  margin=dict(t=30, b=10, l=10, r=10), height=180, showlegend=False)
-                st.plotly_chart(fig, use_container_width=True)
+                # Vẽ biểu đồ với Plotly
+                try:
+                    fig = px.pie(sent_counts, values='count', names='Cảm xúc', hole=0.6, color='Cảm xúc', color_discrete_map=color_map)
+                    fig.update_traces(textposition='outside', textinfo='percent+label')
+                    fig.update_layout(title=dict(text="AI Đánh giá Cảm xúc Mạng Xã Hội", font=dict(size=13, color='#475569')), 
+                                      margin=dict(t=30, b=10, l=10, r=10), height=180, showlegend=False)
+                    st.plotly_chart(fig, use_container_width=True)
+                except Exception as ex:
+                    st.warning("Vui lòng Reboot lại App trên Streamlit để hiển thị biểu đồ!")
                 st.markdown("</div>", unsafe_allow_html=True)
 
             # Cột 3: Khảo sát Zalo (Demo)
@@ -260,27 +264,26 @@ for i, (tab_name, cfg) in enumerate(RSS_FEEDS.items()):
                         <div class='kpi-title' style='margin:0;'>📊 Khảo sát trực tuyến (Zalo)</div>
                         <span style='background:#EFF6FF; color:#004B87; font-size:10px; padding:2px 6px; border-radius:4px; font-weight:bold;'>Đang diễn ra</span>
                     </div>
-                    <div style='font-size:13px; font-weight:bold; color:#0F172A; margin:8px 0;'>Đánh giá tiến độ Đền bù GPMB Cao tốc Tuyên Quang - Hà Giang</div>
+                    <div style='font-size:13px; font-weight:bold; color:#0F172A; margin:8px 0;'>Lấy ý kiến nhân dân về thủ tục Hành chính Phường/Xã</div>
                     
-                    <div style='font-size:11px; color:#475569; display:flex; justify-content:space-between;'><span>Đồng thuận cao (75%)</span><span>1,204 vote</span></div>
-                    <div class='poll-bar-bg'><div class='poll-bar-fg' style='width: 75%; background: #16A34A;'></div></div>
+                    <div style='font-size:11px; color:#475569; display:flex; justify-content:space-between;'><span>Hài lòng (82%)</span><span>3,405 vote</span></div>
+                    <div class='poll-bar-bg'><div class='poll-bar-fg' style='width: 82%; background: #16A34A;'></div></div>
                     
-                    <div style='font-size:11px; color:#475569; display:flex; justify-content:space-between; margin-top:8px;'><span>Còn vướng mắc (25%)</span><span>401 vote</span></div>
-                    <div class='poll-bar-bg'><div class='poll-bar-fg' style='width: 25%; background: #D97706;'></div></div>
+                    <div style='font-size:11px; color:#475569; display:flex; justify-content:space-between; margin-top:8px;'><span>Còn phàn nàn (18%)</span><span>747 vote</span></div>
+                    <div class='poll-bar-bg'><div class='poll-bar-fg' style='width: 18%; background: #D97706;'></div></div>
                     
                     <button style='width:100%; background:#004B87; color:white; border:none; padding:6px; border-radius:4px; margin-top:12px; font-size:12px; font-weight:bold; cursor:pointer;'>+ Tạo chiến dịch Khảo sát mới</button>
                 </div>
                 """, unsafe_allow_html=True)
             
             st.markdown("<hr style='margin:25px 0 15px;'>", unsafe_allow_html=True)
-            st.markdown(f"<p style='color:#004B87; font-weight:bold;'>Danh sách {len(entries_to_show)} bài viết thu thập mới nhất:</p>", unsafe_allow_html=True)
+            st.markdown(f"<p style='color:#004B87; font-weight:bold;'>Danh sách {len(entries_to_show)} bài viết/bình luận thu thập mới nhất:</p>", unsafe_allow_html=True)
 
         else:
-            # Nếu là các Tab bình thường
             st.markdown(f"<p style='color:#004B87; font-weight:bold; margin-top:10px;'>Đang hiển thị {len(entries_to_show)} tin bài nổi bật nhất:</p>", unsafe_allow_html=True)
 
         # =======================================================
-        # RENDER DANH SÁCH TIN (CÓ GẮN NHÃN CẢM XÚC NẾU LÀ TAB DƯ LUẬN)
+        # RENDER DANH SÁCH TIN 
         # =======================================================
         cols = st.columns(3)
         for idx, entry in enumerate(entries_to_show):
@@ -291,7 +294,7 @@ for i, (tab_name, cfg) in enumerate(RSS_FEEDS.items()):
             
             # Gắn nhãn AI nếu đang ở Tab Dư luận
             badge_html = ""
-            if tab_name == "🗣️ Dư luận XH":
+            if tab_name == "🗣️ Dư luận MXH":
                 lbl_text, bg_col, text_col, _ = analyze_sentiment(title, summary)
                 badge_html = f"<div class='sentiment-badge' style='background:{bg_col}; color:{text_col}; border-color:{text_col}'>{lbl_text}</div>"
 

@@ -1,4 +1,5 @@
 streamlit
-feedparser
-beautifulsoup4
 supabase
+feedparser
+plotly
+pandas

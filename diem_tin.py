@@ -1,6 +1,6 @@
 """
-HỆ THỐNG ĐIỂM TIN & LẮNG NGHE DƯ LUẬN - PHIÊN BẢN V5.2 (CHỐNG LỖI SẬP APP)
-Đã vá: Bọc try-catch cho thư viện Plotly/Pandas để app chạy mượt kể cả khi server chưa kịp cài thư viện
+HỆ THỐNG ĐIỂM TIN & LẮNG NGHE DƯ LUẬN - PHIÊN BẢN V5.3
+Đã vá: Đồng bộ số liệu thống kê khớp với số tin hiển thị, dỡ bỏ module Zalo Demo để tối ưu giao diện
 """
 
 import streamlit as st
@@ -99,13 +99,10 @@ st.markdown("""
 
     /* ── KHOẢNG LẮNG NGHE DƯ LUẬN ── */
     .dashboard-box { background: white; border-radius: 8px; padding: 15px; border: 1px solid #E2E8F0; box-shadow: 0 2px 4px rgba(0,0,0,0.02); height: 100%; }
-    .kpi-title { font-size: 12px; color: #64748B; font-weight: bold; text-transform: uppercase; margin-bottom: 5px;}
-    .kpi-value { font-size: 28px; font-weight: 900; }
+    .kpi-title { font-size: 13px; color: #64748B; font-weight: bold; text-transform: uppercase; margin-bottom: 5px;}
+    .kpi-value { font-size: 32px; font-weight: 900; }
     .sentiment-badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; margin-bottom: 8px; border: 1px solid;}
     
-    .poll-bar-bg { background: #E2E8F0; border-radius: 10px; height: 12px; width: 100%; margin-top: 5px; overflow: hidden; }
-    .poll-bar-fg { height: 100%; border-radius: 10px; }
-
     /* ── SCROLL TO TOP ── */
     .scroll-top { position: fixed; bottom: 30px; right: 30px; background: #004B87; color: white !important; border-radius: 50%; width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; font-size: 20px; text-decoration: none !important; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 99; }
     .scroll-top:hover { background: #C8102E; }
@@ -144,8 +141,8 @@ def format_date(date_str):
 
 def analyze_sentiment(title, summary):
     text = (title + " " + summary).lower()
-    neg_words = ['bức xúc', 'sai phạm', 'kêu cứu', 'phản ánh', 'ô nhiễm', 'ngập', 'xuống cấp', 'chậm tiến độ', 'đền bù', 'giải tỏa', 'tệ nạn', 'vi phạm', 'bất cập', 'chưa được']
-    pos_words = ['biểu dương', 'khen thưởng', 'hoàn thành', 'vượt mức', 'xây dựng nông thôn mới', 'khang trang', 'hiệu quả', 'ủng hộ', 'đóng góp', 'khắc phục']
+    neg_words = ['bức xúc', 'sai phạm', 'kêu cứu', 'phản ánh', 'ô nhiễm', 'ngập', 'xuống cấp', 'chậm tiến độ', 'đền bù', 'giải tỏa', 'tệ nạn', 'vi phạm', 'bất cập', 'chưa được', 'lừa đảo', 'chiếm đoạt', 'bắt giữ', 'khởi tố']
+    pos_words = ['biểu dương', 'khen thưởng', 'hoàn thành', 'vượt mức', 'xây dựng nông thôn mới', 'khang trang', 'hiệu quả', 'ủng hộ', 'đóng góp', 'khắc phục', 'phát triển', 'thành công']
     
     neg_score = sum(1 for w in neg_words if w in text)
     pos_score = sum(1 for w in pos_words if w in text)
@@ -195,8 +192,9 @@ with st.container():
     with c1:
         st.markdown("<b style='color:#004B87; font-size:14px;'>⚙ TÙY CHỈNH HIỂN THỊ:</b>", unsafe_allow_html=True)
     with c2:
-        so_luong_tin = st.slider("Số lượng tin/mục hiển thị:", min_value=3, max_value=30, value=9, step=3, label_visibility="collapsed")
+        so_luong_tin = st.slider("Số lượng tin/mục hiển thị:", min_value=3, max_value=50, value=9, step=1, label_visibility="collapsed")
     with c3:
+        st.write("")
         if st.button("🔄 Làm mới dữ liệu", use_container_width=True):
             st.cache_data.clear()
             st.rerun()
@@ -218,23 +216,29 @@ for i, (tab_name, cfg) in enumerate(RSS_FEEDS.items()):
         entries_to_show = entries[:so_luong_tin]
         tag = cfg["tag"]
 
+        # =======================================================
+        # NẾU LÀ TAB DƯ LUẬN MXH -> HIỂN THỊ DASHBOARD LẮNG NGHE
+        # =======================================================
         if tab_name == "🗣️ Dư luận MXH":
+            # ĐỒNG BỘ: Chỉ chấm điểm và đếm những bài thực sự đang hiển thị
             sentiments = []
-            for e in entries:
+            for e in entries_to_show:
                 t = e.get("title", "")
                 s = clean_html(e.get("summary", ""))
                 _, _, _, label = analyze_sentiment(t, s)
                 sentiments.append(label)
                 
             st.markdown("<h4 style='color:#004B87; font-weight:800; text-transform:uppercase;'>🎯 Trạm Lắng Nghe & Phân Tích Mạng Xã Hội</h4>", unsafe_allow_html=True)
-            d_col1, d_col2, d_col3 = st.columns([1, 1.5, 1.5])
+            
+            # Chia 2 cột thay vì 3 (vì đã dẹp form Zalo)
+            d_col1, d_col2 = st.columns([1.2, 2.8])
             
             with d_col1:
                 st.markdown(f"""
                 <div class='dashboard-box'>
-                    <div class='kpi-title'>Tin/Bài liên quan Tuyên Quang</div>
-                    <div class='kpi-value' style='color:#004B87;'>{len(entries)} bài</div>
-                    <hr style='margin:10px 0;'>
+                    <div class='kpi-title'>Tin/Bài đang hiển thị</div>
+                    <div class='kpi-value' style='color:#004B87;'>{len(entries_to_show)} bài</div>
+                    <hr style='margin:12px 0;'>
                     <div class='kpi-title' style='color:#DC2626'>Cảnh báo Tiêu cực</div>
                     <div class='kpi-value' style='color:#DC2626;'>{sentiments.count('Tiêu cực')} vụ</div>
                 </div>
@@ -242,42 +246,30 @@ for i, (tab_name, cfg) in enumerate(RSS_FEEDS.items()):
                 
             with d_col2:
                 st.markdown("<div class='dashboard-box'>", unsafe_allow_html=True)
-                # Chỉ hiện biểu đồ nếu đã tải được plotly và pandas
-                if HAS_LIBS:
+                if HAS_LIBS and len(sentiments) > 0:
                     color_map = {"Tích cực": "#16A34A", "Trung lập": "#D97706", "Tiêu cực": "#DC2626"}
                     df_sent = pd.DataFrame(sentiments, columns=["Cảm xúc"])
                     sent_counts = df_sent["Cảm xúc"].value_counts().reset_index()
-                    fig = px.pie(sent_counts, values='count', names='Cảm xúc', hole=0.6, color='Cảm xúc', color_discrete_map=color_map)
+                    fig = px.pie(sent_counts, values='count', names='Cảm xúc', hole=0.55, color='Cảm xúc', color_discrete_map=color_map)
                     fig.update_traces(textposition='outside', textinfo='percent+label')
-                    fig.update_layout(title=dict(text="AI Đánh giá Cảm xúc Mạng Xã Hội", font=dict(size=13, color='#475569')), 
-                                      margin=dict(t=30, b=10, l=10, r=10), height=180, showlegend=False)
+                    fig.update_layout(title=dict(text="Biểu đồ Phân tích Sắc thái Dư luận", font=dict(size=14, color='#475569')), 
+                                      margin=dict(t=40, b=10, l=10, r=10), height=220, showlegend=False)
                     st.plotly_chart(fig, use_container_width=True)
-                else:
+                elif not HAS_LIBS:
                     st.info("⚙️ Đang chờ máy chủ cài đặt bộ thư viện vẽ biểu đồ. Sếp vui lòng kiểm tra lại file 'requirements.txt' trên Github và nhấn Reboot App nhé!")
+                else:
+                    st.warning("Không đủ dữ liệu để vẽ biểu đồ.")
                 st.markdown("</div>", unsafe_allow_html=True)
-
-            with d_col3:
-                st.markdown("""
-                <div class='dashboard-box'>
-                    <div style='display:flex; justify-content:space-between; align-items:center;'>
-                        <div class='kpi-title' style='margin:0;'>📊 Khảo sát trực tuyến (Zalo)</div>
-                        <span style='background:#EFF6FF; color:#004B87; font-size:10px; padding:2px 6px; border-radius:4px; font-weight:bold;'>Đang diễn ra</span>
-                    </div>
-                    <div style='font-size:13px; font-weight:bold; color:#0F172A; margin:8px 0;'>Lấy ý kiến nhân dân về thủ tục Hành chính Phường/Xã</div>
-                    <div style='font-size:11px; color:#475569; display:flex; justify-content:space-between;'><span>Hài lòng (82%)</span><span>3,405 vote</span></div>
-                    <div class='poll-bar-bg'><div class='poll-bar-fg' style='width: 82%; background: #16A34A;'></div></div>
-                    <div style='font-size:11px; color:#475569; display:flex; justify-content:space-between; margin-top:8px;'><span>Còn phàn nàn (18%)</span><span>747 vote</span></div>
-                    <div class='poll-bar-bg'><div class='poll-bar-fg' style='width: 18%; background: #D97706;'></div></div>
-                    <button style='width:100%; background:#004B87; color:white; border:none; padding:6px; border-radius:4px; margin-top:12px; font-size:12px; font-weight:bold; cursor:pointer;'>+ Tạo chiến dịch Khảo sát mới</button>
-                </div>
-                """, unsafe_allow_html=True)
             
             st.markdown("<hr style='margin:25px 0 15px;'>", unsafe_allow_html=True)
-            st.markdown(f"<p style='color:#004B87; font-weight:bold;'>Danh sách {len(entries_to_show)} bài viết/bình luận thu thập mới nhất:</p>", unsafe_allow_html=True)
+            st.markdown(f"<p style='color:#004B87; font-weight:bold;'>Danh sách chi tiết các bài viết/bình luận thu thập mới nhất:</p>", unsafe_allow_html=True)
 
         else:
             st.markdown(f"<p style='color:#004B87; font-weight:bold; margin-top:10px;'>Đang hiển thị {len(entries_to_show)} tin bài nổi bật nhất:</p>", unsafe_allow_html=True)
 
+        # =======================================================
+        # RENDER DANH SÁCH TIN 
+        # =======================================================
         cols = st.columns(3)
         for idx, entry in enumerate(entries_to_show):
             title = entry.get("title", "Không có tiêu đề")
@@ -307,6 +299,7 @@ for i, (tab_name, cfg) in enumerate(RSS_FEEDS.items()):
             with cols[idx % 3]:
                 st.markdown(card_html, unsafe_allow_html=True)
 
+# Footer & Nút cuộn lên
 st.markdown("""
 <hr>
 <div style='text-align:center; color:#64748B; font-size:12px; margin-bottom:20px;'>

@@ -174,48 +174,91 @@ LOCAL_KEYWORDS = [
     "yên lập", "yên minh", "yên nguyên", "yên phú", "yên thành"
 ]
 
+# Danh sách CHÍNH XÁC 124 xã, phường của tỉnh Tuyên Quang (mới, sau sáp nhập) — kèm tiền tố
+# Xã/Phường chuẩn do người dùng cung cấp. Đây là căn cứ đáng tin cậy nhất để khớp tin bài,
+# tránh tình trạng tên xã trùng với xã/phường ở tỉnh khác (vd: "xã Tân Thanh" ở Ninh Bình,
+# "xã Đồng Tâm" ở Đồng Nai...).
+OFFICIAL_WARD_NAMES = [
+    "Phường Mỹ Lâm", "Phường Minh Xuân", "Phường Nông Tiến", "Phường An Tường", "Phường Bình Thuận",
+    "Phường Hà Giang 1", "Phường Hà Giang 2",
+    "Xã Thượng Lâm", "Xã Lâm Bình", "Xã Minh Quang", "Xã Bình An", "Xã Côn Lôn", "Xã Yên Hoa",
+    "Xã Thượng Nông", "Xã Hồng Thái", "Xã Nà Hang", "Xã Tân Mỹ", "Xã Yên Lập", "Xã Tân An",
+    "Xã Chiêm Hóa", "Xã Hòa An", "Xã Kiên Đài", "Xã Tri Phú", "Xã Kim Bình", "Xã Yên Nguyên",
+    "Xã Yên Phú", "Xã Bạch Xa", "Xã Phù Lưu", "Xã Hàm Yên", "Xã Bình Xa", "Xã Thái Sơn",
+    "Xã Thái Hòa", "Xã Hùng Lợi", "Xã Trung Sơn", "Xã Thái Bình", "Xã Tân Long", "Xã Xuân Vân",
+    "Xã Lực Hành", "Xã Yên Sơn", "Xã Nhữ Khê", "Xã Tân Trào", "Xã Minh Thanh", "Xã Sơn Dương",
+    "Xã Bình Ca", "Xã Tân Thanh", "Xã Sơn Thủy", "Xã Phú Lương", "Xã Trường Sinh", "Xã Hồng Sơn",
+    "Xã Đông Thọ",
+    "Xã Lũng Cú", "Xã Đồng Văn", "Xã Sà Phìn", "Xã Phố Bảng", "Xã Lũng Phìn", "Xã Sủng Máng",
+    "Xã Sơn Vĩ", "Xã Mèo Vạc", "Xã Khâu Vai", "Xã Niêm Sơn", "Xã Tát Ngà", "Xã Thắng Mố",
+    "Xã Bạch Đích", "Xã Yên Minh", "Xã Mậu Duệ", "Xã Du Già", "Xã Đường Thượng", "Xã Lùng Tám",
+    "Xã Cán Tỷ", "Xã Nghĩa Thuận", "Xã Quản Bạ", "Xã Tùng Vài", "Xã Yên Cường", "Xã Đường Hồng",
+    "Xã Bắc Mê", "Xã Minh Ngọc", "Xã Ngọc Đường", "Xã Lao Chải", "Xã Thanh Thủy", "Xã Phú Linh",
+    "Xã Linh Hồ", "Xã Bạch Ngọc", "Xã Vị Xuyên", "Xã Việt Lâm", "Xã Tân Quang", "Xã Đồng Tâm",
+    "Xã Liên Hiệp", "Xã Bằng Hành", "Xã Bắc Quang", "Xã Hùng An", "Xã Vĩnh Tuy", "Xã Đồng Yên",
+    "Xã Tiên Yên", "Xã Xuân Giang", "Xã Bằng Lang", "Xã Yên Thành", "Xã Quang Bình", "Xã Tân Trịnh",
+    "Xã Thông Nguyên", "Xã Hồ Thầu", "Xã Nậm Dịch", "Xã Tân Tiến", "Xã Hoàng Su Phì", "Xã Thàng Tín",
+    "Xã Bản Máy", "Xã Pờ Ly Ngài", "Xã Xín Mần", "Xã Pà Vầy Sủ", "Xã Nấm Dẩn", "Xã Trung Thịnh",
+    "Xã Khuôn Lùng", "Xã Trung Hà", "Xã Kiến Thiết", "Xã Hùng Đức", "Xã Minh Sơn", "Xã Minh Tân",
+    "Xã Thuận Hòa", "Xã Tùng Bá", "Xã Thượng Sơn", "Xã Cao Bồ", "Xã Ngọc Long", "Xã Giáp Trung",
+    "Xã Tiên Nguyên", "Xã Quảng Nguyên",
+]
+OFFICIAL_WARD_NAMES_LOWER = [w.lower() for w in OFFICIAL_WARD_NAMES]
+# Tên xã/phường KHÔNG kèm tiền tố (vd "vĩnh tuy"), dùng để dò trong nội dung báo —
+# vì báo chí không phải lúc nào cũng ghi đúng "Xã"/"Phường" theo danh mục chính thức
+# (vd báo viết "Phường Vĩnh Tuy" dù danh mục gốc ghi "Xã Vĩnh Tuy").
+OFFICIAL_WARD_BARE_NAMES = sorted(
+    {re.sub(r'^(xã|phường)\s+', '', w.lower()) for w in OFFICIAL_WARD_NAMES},
+    key=len, reverse=True,  # ưu tiên khớp cụm dài trước để tránh khớp nhầm cụm con
+)
+ADMIN_PREFIXES = ["xã ", "phường ", "thị trấn ", "tx ", "tp "]
+
+# Tên một số tỉnh/thành khác hay gây trùng tên xã/phường với Tuyên Quang sau sáp nhập toàn quốc.
+# Nếu bài viết nhắc rõ một trong các tỉnh này (và KHÔNG nhắc "Tuyên Quang") thì loại bỏ,
+# dù có khớp tên xã/phường, để tránh nhận nhầm tin của tỉnh bạn.
+OTHER_PROVINCE_SIGNALS = [
+    "hà nội", "hồ chí minh", "hải phòng", "đà nẵng", "huế", "lai châu", "điện biên", "sơn la",
+    "lào cai", "cao bằng", "lạng sơn", "thái nguyên", "phú thọ", "bắc ninh", "quảng ninh",
+    "ninh bình", "thanh hóa", "nghệ an", "hà tĩnh", "quảng trị", "quảng ngãi", "gia lai",
+    "khánh hòa", "lâm đồng", "đắk lắk", "đồng nai", "tây ninh", "cần thơ", "vĩnh long",
+    "đồng tháp", "cà mau", "an giang",
+]
+
 SOCIAL_SIGNAL_WORDS = [
     "facebook", "fanpage", "mạng xã hội", "tiktok", "zalo", "youtube", "group", "hội nhóm",
     "bình luận", "chia sẻ", "lan truyền", "viral", "dư luận", "phản ánh", "bức xúc"
 ]
 
-# Các cụm trùng tên xã/phường nhưng rất hay xuất hiện trong ngữ cảnh KHÔNG liên quan tới tỉnh
-# (vd: "Thái Bình Dương" = Pacific Ocean, "đồng yên" = đồng Yên Nhật Bản...).
-# Với các từ khóa này, chỉ tính là tin địa phương nếu đi kèm "xã/phường/thị trấn" phía trước,
-# hoặc bài viết có nhắc rõ "Tuyên Quang".
-AMBIGUOUS_KEYWORDS = {
-    "thái bình", "đồng yên", "an tường", "bình an", "trung sơn", "tân an", "yên lập",
-    "bình xa", "minh sơn", "minh tân", "minh quang", "minh xuân", "đồng tâm", "phú linh",
-    "phú lương", "tân thanh", "tân tiến", "thái sơn", "thái hòa", "hùng an", "tân mỹ",
-    "tân long", "yên phú", "hồng sơn", "trung hà",
-}
-
-ADMIN_PREFIXES = ["xã ", "phường ", "thị trấn ", "huyện "]
-
 
 def is_local_content(title, summary):
     """
     Kiểm tra một bài viết có thực sự liên quan tới tỉnh Tuyên Quang (mới) hay không.
-    - Nếu có nhắc rõ "Tuyên Quang" -> chắc chắn liên quan.
-    - Nếu khớp 1 từ khóa xã/phường KHÔNG nằm trong danh sách dễ gây nhầm -> liên quan.
-    - Nếu khớp 1 từ khóa NẰM trong danh sách dễ nhầm -> chỉ tính khi đi kèm
-      tiền tố hành chính (xã/phường/thị trấn/huyện) ngay trước đó.
+    - Nếu có nhắc rõ "Tuyên Quang" -> chắc chắn liên quan (ưu tiên cao nhất).
+    - Nếu khớp tên xã/phường chuẩn ĐI KÈM một tiền tố hành chính bất kỳ ngay trước
+      (vd "xã Tân Thanh", "phường Vĩnh Tuy" — không yêu cầu đúng tuyệt đối Xã/Phường
+      vì báo chí ghi không thống nhất) VÀ nội dung KHÔNG nhắc tới tỉnh/thành khác
+      -> liên quan. (Loại trừ tỉnh khác là cần thiết vì sau sáp nhập toàn quốc, nhiều
+      nơi dùng lại tên xã giống Tuyên Quang, vd "xã Tân Thanh" cũng có ở Ninh Bình.)
     """
     content = (title + " " + summary).lower()
 
     if "tuyên quang" in content:
         return True
 
-    for kw in LOCAL_KEYWORDS:
-        if kw not in content:
-            continue
-        if kw not in AMBIGUOUS_KEYWORDS:
-            return True
-        # Từ khóa dễ nhầm: chỉ chấp nhận nếu có tiền tố hành chính ngay trước
+    matched_ward = False
+    for name in OFFICIAL_WARD_BARE_NAMES:
         for prefix in ADMIN_PREFIXES:
-            if (prefix + kw) in content:
-                return True
-    return False
+            if (prefix + name) in content:
+                matched_ward = True
+                break
+        if matched_ward:
+            break
+
+    if not matched_ward:
+        return False
+
+    has_other_province = any(p in content for p in OTHER_PROVINCE_SIGNALS)
+    return not has_other_province
 
 
 def is_safe(entry):

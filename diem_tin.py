@@ -179,6 +179,44 @@ SOCIAL_SIGNAL_WORDS = [
     "bình luận", "chia sẻ", "lan truyền", "viral", "dư luận", "phản ánh", "bức xúc"
 ]
 
+# Các cụm trùng tên xã/phường nhưng rất hay xuất hiện trong ngữ cảnh KHÔNG liên quan tới tỉnh
+# (vd: "Thái Bình Dương" = Pacific Ocean, "đồng yên" = đồng Yên Nhật Bản...).
+# Với các từ khóa này, chỉ tính là tin địa phương nếu đi kèm "xã/phường/thị trấn" phía trước,
+# hoặc bài viết có nhắc rõ "Tuyên Quang".
+AMBIGUOUS_KEYWORDS = {
+    "thái bình", "đồng yên", "an tường", "bình an", "trung sơn", "tân an", "yên lập",
+    "bình xa", "minh sơn", "minh tân", "minh quang", "minh xuân", "đồng tâm", "phú linh",
+    "phú lương", "tân thanh", "tân tiến", "thái sơn", "thái hòa", "hùng an", "tân mỹ",
+    "tân long", "yên phú", "hồng sơn", "trung hà",
+}
+
+ADMIN_PREFIXES = ["xã ", "phường ", "thị trấn ", "huyện "]
+
+
+def is_local_content(title, summary):
+    """
+    Kiểm tra một bài viết có thực sự liên quan tới tỉnh Tuyên Quang (mới) hay không.
+    - Nếu có nhắc rõ "Tuyên Quang" -> chắc chắn liên quan.
+    - Nếu khớp 1 từ khóa xã/phường KHÔNG nằm trong danh sách dễ gây nhầm -> liên quan.
+    - Nếu khớp 1 từ khóa NẰM trong danh sách dễ nhầm -> chỉ tính khi đi kèm
+      tiền tố hành chính (xã/phường/thị trấn/huyện) ngay trước đó.
+    """
+    content = (title + " " + summary).lower()
+
+    if "tuyên quang" in content:
+        return True
+
+    for kw in LOCAL_KEYWORDS:
+        if kw not in content:
+            continue
+        if kw not in AMBIGUOUS_KEYWORDS:
+            return True
+        # Từ khóa dễ nhầm: chỉ chấp nhận nếu có tiền tố hành chính ngay trước
+        for prefix in ADMIN_PREFIXES:
+            if (prefix + kw) in content:
+                return True
+    return False
+
 
 def is_safe(entry):
     content = (entry.get("title", "") + " " + entry.get("link", "") + " " + entry.get("summary", "")).lower()
@@ -271,8 +309,7 @@ def fetch_rss(url, require_local=False):
             if not is_safe(e):
                 continue
             if require_local:
-                content = (e.get("title", "") + " " + e.get("summary", "")).lower()
-                if not any(kw in content for kw in LOCAL_KEYWORDS):
+                if not is_local_content(e.get("title", ""), e.get("summary", "")):
                     continue
             safe_entries.append(e)
         safe_entries.sort(key=score_entry, reverse=True)
@@ -302,8 +339,7 @@ def fetch_multi_rss(queries, require_local=True, sort_mode="date", cap=200):
             if not title_key or title_key in seen_titles:
                 continue
             if require_local:
-                content = (e.get("title", "") + " " + e.get("summary", "")).lower()
-                if not any(kw in content for kw in LOCAL_KEYWORDS):
+                if not is_local_content(e.get("title", ""), e.get("summary", "")):
                     continue
             seen_titles.add(title_key)
             merged.append(e)

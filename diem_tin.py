@@ -3,8 +3,9 @@ HỆ THỐNG ĐIỂM TIN & LẮNG NGHE DƯ LUẬN - PHIÊN BẢN V5.7 (LOCAL FOC
 Cập nhật so với v5.6:
   - Mục "Dư luận MXH": thu hẹp cửa sổ thời gian (2 ngày), sắp xếp theo TIN MỚI NHẤT thay vì điểm số,
     gộp nhiều truy vấn để có nguồn tin tươi hơn.
-  - Mục "Địa phương": mở rộng tối đa 200 tin, gộp nhiều truy vấn theo từng huyện/thành phố
-    (bao gồm cả địa bàn Hà Giang cũ sau sáp nhập) để quét toàn bộ tin liên quan tới tỉnh.
+  - Mục "Địa phương": mở rộng tối đa 200 tin, gộp nhiều truy vấn theo từng NHÓM XÃ/PHƯỜNG
+    (toàn tỉnh có 124 xã, phường sau sáp nhập Tuyên Quang + Hà Giang, không còn cấp huyện)
+    để quét toàn bộ tin liên quan tới tỉnh.
   - Giao diện làm mới: header gradient, thẻ tin bo góc mềm, hiệu ứng hover tinh tế hơn,
     badge cảm xúc dạng pill, khu vực thống kê trực quan hơn.
 """
@@ -133,14 +134,11 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ==========================================
-# DANH SÁCH HUYỆN/THÀNH PHỐ ĐỂ QUÉT DIỆN RỘNG
-# (gồm cả địa bàn Hà Giang cũ sau sáp nhập với Tuyên Quang)
+# Lưu ý: Sau sáp nhập (2025), tỉnh Tuyên Quang (mới) hợp nhất từ Tuyên Quang +
+# Hà Giang cũ, không còn cấp huyện/thành phố — chỉ còn cấp tỉnh và 124 xã/phường.
+# Vì vậy việc quét diện rộng được thực hiện theo TỪNG NHÓM XÃ/PHƯỜNG (lấy từ
+# LOCAL_KEYWORDS) thay vì theo huyện cũ.
 # ==========================================
-DISTRICTS_FOR_WIDE_SCAN = [
-    "Tuyên Quang", "Hàm Yên", "Sơn Dương", "Chiêm Hóa", "Nà Hang", "Lâm Bình", "Yên Sơn",
-    "Hà Giang", "Bắc Quang", "Quang Bình", "Vị Xuyên", "Bắc Mê",
-    "Hoàng Su Phì", "Xín Mần", "Quản Bạ", "Yên Minh", "Đồng Văn", "Mèo Vạc",
-]
 
 # ==========================================
 # CẤU HÌNH NGUỒN TIN (RSS đơn) — dùng cho các tab không cần quét diện rộng
@@ -245,6 +243,23 @@ def score_entry(entry):
 
 def gnews_query_url(query, when="3d"):
     return f"https://news.google.com/rss/search?q={quote(query)}+when:{when}&hl=vi&gl=VN&ceid=VN:vi"
+
+
+def build_ward_group_queries(group_size=10):
+    """
+    Chia 124 xã/phường (LOCAL_KEYWORDS) thành các nhóm nhỏ, mỗi nhóm ghép thành
+    1 truy vấn dạng OR (vd: "Yên Sơn" OR "Hàm Yên" OR ...). Cách này giúp quét
+    được toàn bộ địa bàn tỉnh (không còn cấp huyện) mà không cần gọi 124 lần.
+    """
+    skip = {"hà giang 1", "hà giang 2", "na hang"}
+    wards = [w.title() for w in LOCAL_KEYWORDS if w not in skip]
+
+    queries = []
+    for i in range(0, len(wards), group_size):
+        chunk = wards[i:i + group_size]
+        or_terms = " OR ".join(f'"{w}"' for w in chunk)
+        queries.append(f"({or_terms})")
+    return queries
 
 
 @st.cache_data(ttl=900)
@@ -395,15 +410,16 @@ for i, (tab_name, cfg) in enumerate(RSS_FEEDS.items()):
             st.markdown(f"<p style='color:#0D1B2A; font-weight:bold;'>Danh sách chi tiết, sắp xếp theo thời gian đăng mới nhất:</p>", unsafe_allow_html=True)
 
         # ---------------------------------------------------
-        # TAB ĐỊA PHƯƠNG: quét diện rộng toàn bộ huyện/thành phố, tối đa 200 tin
+        # TAB ĐỊA PHƯƠNG: quét diện rộng toàn bộ 124 xã/phường trong tỉnh, tối đa 200 tin
         # ---------------------------------------------------
         elif tab_name == "📍 Địa phương":
             so_luong_dia_phuong = st.slider(
-                "Số lượng tin Địa phương hiển thị (tối đa 200, quét toàn bộ huyện/thành phố trong tỉnh):",
+                "Số lượng tin Địa phương hiển thị (tối đa 200, quét toàn bộ 124 xã, phường trong tỉnh):",
                 min_value=10, max_value=200, value=60, step=10
             )
-            with st.spinner("Đang quét tin từ tất cả huyện/thành phố trong tỉnh..."):
-                wide_queries = [gnews_query_url(f'"{d}"', when="14d") for d in DISTRICTS_FOR_WIDE_SCAN]
+            with st.spinner("Đang quét tin từ toàn bộ 124 xã, phường trong tỉnh..."):
+                wide_queries = [gnews_query_url('"Tuyên Quang"', when="14d")]
+                wide_queries += [gnews_query_url(q, when="14d") for q in build_ward_group_queries(group_size=10)]
                 entries = fetch_multi_rss(wide_queries, require_local=True, sort_mode="date", cap=200)
 
             if not entries:
@@ -411,7 +427,7 @@ for i, (tab_name, cfg) in enumerate(RSS_FEEDS.items()):
                 continue
 
             entries_to_show = entries[:so_luong_dia_phuong]
-            st.markdown(f"<p style='color:#0D1B2A; font-weight:bold; margin-top:10px;'>Đã quét {len(entries)} tin từ toàn bộ huyện/thành phố trong tỉnh · Đang hiển thị {len(entries_to_show)} tin mới nhất:</p>", unsafe_allow_html=True)
+            st.markdown(f"<p style='color:#0D1B2A; font-weight:bold; margin-top:10px;'>Đã quét {len(entries)} tin từ toàn bộ 124 xã, phường trong tỉnh · Đang hiển thị {len(entries_to_show)} tin mới nhất:</p>", unsafe_allow_html=True)
 
         # ---------------------------------------------------
         # CÁC TAB CÒN LẠI (RSS đơn nguồn)

@@ -204,14 +204,6 @@ OFFICIAL_WARD_NAMES = [
     "Xã Tiên Nguyên", "Xã Quảng Nguyên",
 ]
 OFFICIAL_WARD_NAMES_LOWER = [w.lower() for w in OFFICIAL_WARD_NAMES]
-# Tên xã/phường KHÔNG kèm tiền tố (vd "vĩnh tuy"), dùng để dò trong nội dung báo —
-# vì báo chí không phải lúc nào cũng ghi đúng "Xã"/"Phường" theo danh mục chính thức
-# (vd báo viết "Phường Vĩnh Tuy" dù danh mục gốc ghi "Xã Vĩnh Tuy").
-OFFICIAL_WARD_BARE_NAMES = sorted(
-    {re.sub(r'^(xã|phường)\s+', '', w.lower()) for w in OFFICIAL_WARD_NAMES},
-    key=len, reverse=True,  # ưu tiên khớp cụm dài trước để tránh khớp nhầm cụm con
-)
-ADMIN_PREFIXES = ["xã ", "phường ", "thị trấn ", "tx ", "tp "]
 
 # Tên một số tỉnh/thành khác hay gây trùng tên xã/phường với Tuyên Quang sau sáp nhập toàn quốc.
 # Nếu bài viết nhắc rõ một trong các tỉnh này (và KHÔNG nhắc "Tuyên Quang") thì loại bỏ,
@@ -234,25 +226,18 @@ def is_local_content(title, summary):
     """
     Kiểm tra một bài viết có thực sự liên quan tới tỉnh Tuyên Quang (mới) hay không.
     - Nếu có nhắc rõ "Tuyên Quang" -> chắc chắn liên quan (ưu tiên cao nhất).
-    - Nếu khớp tên xã/phường chuẩn ĐI KÈM một tiền tố hành chính bất kỳ ngay trước
-      (vd "xã Tân Thanh", "phường Vĩnh Tuy" — không yêu cầu đúng tuyệt đối Xã/Phường
-      vì báo chí ghi không thống nhất) VÀ nội dung KHÔNG nhắc tới tỉnh/thành khác
-      -> liên quan. (Loại trừ tỉnh khác là cần thiết vì sau sáp nhập toàn quốc, nhiều
-      nơi dùng lại tên xã giống Tuyên Quang, vd "xã Tân Thanh" cũng có ở Ninh Bình.)
+    - Nếu khớp ĐÚNG tên xã/phường theo danh mục chính thức (đúng cả loại hình Xã/Phường,
+      vd "xã Vĩnh Tuy" chứ KHÔNG chấp nhận "phường Vĩnh Tuy" vì Tuyên Quang chỉ có Xã
+      Vĩnh Tuy — "Phường Vĩnh Tuy" thực chất là một phường cũ ở Hà Nội, trùng tên)
+      VÀ nội dung KHÔNG nhắc tới tỉnh/thành khác -> liên quan.
+      (Loại trừ tỉnh khác là lớp bảo vệ bổ sung cho các tên còn lại dễ trùng.)
     """
     content = (title + " " + summary).lower()
 
     if "tuyên quang" in content:
         return True
 
-    matched_ward = False
-    for name in OFFICIAL_WARD_BARE_NAMES:
-        for prefix in ADMIN_PREFIXES:
-            if (prefix + name) in content:
-                matched_ward = True
-                break
-        if matched_ward:
-            break
+    matched_ward = any(name in content for name in OFFICIAL_WARD_NAMES_LOWER)
 
     if not matched_ward:
         return False

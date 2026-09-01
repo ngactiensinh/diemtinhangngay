@@ -387,7 +387,7 @@ today_str = datetime.datetime.now().strftime("%d/%m/%Y")
 
 st.markdown(f"""
 <div class="masthead">
-    <div class="masthead-eyebrow">BAN TUYÊN GIÁO VÀ DÂN VẬN TỈNH ỦY TUYÊN QUANG</div>
+    <div class="masthead-eyebrow">BAN TUYÊN GIÁO TỈNH ỦY TUYÊN QUANG</div>
     <h1 class="masthead-title">ĐIỂM TIN & <span>LẮNG NGHE DƯ LUẬN</span></h1>
     <p class="masthead-subtitle">Hệ thống thu thập tin tức và phân tích mạng xã hội địa phương ứng dụng AI</p>
     <span class="live-badge"><span class="live-dot"></span>ĐANG CẬP NHẬT 24/7</span>
@@ -543,7 +543,7 @@ for i, (tab_name, cfg) in enumerate(RSS_FEEDS.items()):
 st.markdown("""
 <hr>
 <div style='text-align:center; color:#64748B; font-size:12px; margin-bottom:20px;'>
-    Hệ thống Điểm tin & Lắng nghe Dư luận · Ban Tuyên giáo & Dân vận Tỉnh ủy Tuyên Quang
+    Hệ thống Điểm tin & Lắng nghe Dư luận · Ban Tuyên giáo Tỉnh ủy Tuyên Quang
 </div>
 <a href="#top-of-page" class="scroll-top" title="Lên đầu trang">⬆</a>
 """, unsafe_allow_html=True)
